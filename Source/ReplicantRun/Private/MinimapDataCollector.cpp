@@ -19,7 +19,7 @@ AMinimapDataCollector::AMinimapDataCollector()
 void AMinimapDataCollector::BeginPlay()
 {
 	Super::BeginPlay();
-
+	if (GetWorld() == nullptr) return;
 	MaterialParamInstance = GetWorld()->GetParameterCollectionInstance(MaterialParams);
 	if (MaterialParamInstance == nullptr) return;
 
@@ -45,6 +45,7 @@ void AMinimapDataCollector::SetMinimapMaterialParams()
 {
 	if (MaterialParams == nullptr) return;
 	if (MaterialParamInstance == nullptr) return;
+	if (GetWorld() == nullptr) return;
 	const ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (PlayerCharacter == nullptr) return;
 
@@ -55,8 +56,17 @@ void AMinimapDataCollector::SetMinimapMaterialParams()
 	}
 
 	// Set material parameter for Rotation Amount
-	const FRotator PlayerRotation = PlayerCharacter->GetActorRotation();
+	// May be used later for player character icon
+	/*const FRotator PlayerRotation = PlayerCharacter->GetActorRotation();
 	if (!MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), PlayerRotation.Yaw))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap RotationAmount!")));
+	}*/
+
+	// Set material parameter for camera rotation
+	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	if (CameraManager == nullptr) return;
+	if (!MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), CameraManager->GetCameraRotation().Yaw))
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap RotationAmount!")));
 	}
