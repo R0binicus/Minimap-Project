@@ -71,7 +71,7 @@ void AMinimapDataCollector::SetMinimapCentre()
 
 	const FVector PlayerLocation = PlayerCharacter->GetActorLocation();
 
-	float ScaledAxisCoordinate = PlayerLocation.X / MinimapDistanceWidth;
+	float ScaledAxisCoordinate = PlayerLocation.X;// / MinimapDistanceWidth;
 
 	// Set material parameter for the Player X Position
 	if (!MaterialParamInstance->SetScalarParameterValue(FName("PlayerXPos"), ScaledAxisCoordinate))
@@ -79,7 +79,7 @@ void AMinimapDataCollector::SetMinimapCentre()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap PlayerXPos!")));
 	}
 
-	ScaledAxisCoordinate = PlayerLocation.Y / MinimapDistanceWidth;
+	ScaledAxisCoordinate = PlayerLocation.Y;// / MinimapDistanceWidth;
 
 	// Set material parameter for the Player Y Position
 	if (!MaterialParamInstance->SetScalarParameterValue(FName("PlayerYPos"), ScaledAxisCoordinate))
