@@ -19,7 +19,15 @@ AMinimapDataCollector::AMinimapDataCollector()
 void AMinimapDataCollector::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	MaterialParamInstance = GetWorld()->GetParameterCollectionInstance(MaterialParams);
+	if (MaterialParamInstance == nullptr) return;
+
+	// Set material parameter for the Minimap Distance Width
+	if (!MaterialParamInstance->SetScalarParameterValue(FName("MinimapDistanceWidth"), MinimapDistanceWidth))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap MinimapDistanceWidth!")));
+	}
 }
 
 // Called every frame
@@ -31,26 +39,25 @@ void AMinimapDataCollector::Tick(float DeltaTime)
 	// Would a function on a 0.1 second timer be better?
 	// Is there an event better place?
 	SetMinimapMaterialParams();
-
 }
 
 void AMinimapDataCollector::SetMinimapMaterialParams()
 {
-	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	if (PlayerCharacter == nullptr) return;
 	if (MaterialParams == nullptr) return;
+	if (MaterialParamInstance == nullptr) return;
+	const ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (PlayerCharacter == nullptr) return;
 
-	UMaterialParameterCollectionInstance* Instance = GetWorld()->GetParameterCollectionInstance(MaterialParams);
-
-	if (!Instance->SetVectorParameterValue(FName("PlayerPosition"), PlayerCharacter->GetActorLocation()))
+	// Set material parameter for the Player Position
+	if (!MaterialParamInstance->SetVectorParameterValue(FName("PlayerPosition"), PlayerCharacter->GetActorLocation()))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap player position failed!")));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap PlayerPosition!")));
 	}
 
-	FRotator PlayerRotation = PlayerCharacter->GetActorRotation();
-
-	if (!Instance->SetScalarParameterValue(FName("RotationAmount"), PlayerRotation.Yaw))
+	// Set material parameter for Rotation Amount
+	const FRotator PlayerRotation = PlayerCharacter->GetActorRotation();
+	if (!MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), PlayerRotation.Yaw))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap player rotation failed!")));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap RotationAmount!")));
 	}
 }
