@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "MinimapDataCollector.h"
 #include "Kismet/GameplayStatics.h" 
 #include "Materials/MaterialParameterCollection.h"
@@ -19,15 +18,8 @@ AMinimapDataCollector::AMinimapDataCollector()
 void AMinimapDataCollector::BeginPlay()
 {
 	Super::BeginPlay();
-	if (GetWorld() == nullptr) return;
-	MaterialParamInstance = GetWorld()->GetParameterCollectionInstance(MaterialParams);
-	if (MaterialParamInstance == nullptr) return;
 
-	// Set material parameter for the Minimap Distance Width
-	if (!MaterialParamInstance->SetScalarParameterValue(FName("MinimapDistanceWidth"), MinimapDistanceWidth))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap MinimapDistanceWidth!")));
-	}
+	SetMinimapDistanceWidth();
 }
 
 // Called every frame
@@ -46,28 +38,67 @@ void AMinimapDataCollector::SetMinimapMaterialParams()
 	if (MaterialParams == nullptr) return;
 	if (MaterialParamInstance == nullptr) return;
 	if (GetWorld() == nullptr) return;
-	const ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	if (PlayerCharacter == nullptr) return;
+	
+	SetMinimapCentre();
+	SetMinimapRotation();
 
-	// Set material parameter for the Player Position
-	if (!MaterialParamInstance->SetVectorParameterValue(FName("PlayerPosition"), PlayerCharacter->GetActorLocation()))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap PlayerPosition!")));
-	}
-
-	// Set material parameter for Rotation Amount
+	// Set material parameter for player character rotation amount
 	// May be used later for player character icon
 	/*const FRotator PlayerRotation = PlayerCharacter->GetActorRotation();
 	if (!MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), PlayerRotation.Yaw))
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap RotationAmount!")));
 	}*/
+}
 
-	// Set material parameter for camera rotation
+void AMinimapDataCollector::SetMinimapDistanceWidth()
+{
+	if (GetWorld() == nullptr) return;
+	MaterialParamInstance = GetWorld()->GetParameterCollectionInstance(MaterialParams);
+	if (MaterialParamInstance == nullptr) return;
+
+	// Set material parameter for the Minimap Distance Width
+	if (!MaterialParamInstance->SetScalarParameterValue(FName("MinimapDistanceWidth"), MinimapDistanceWidth))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap MinimapDistanceWidth!")));
+	}
+}
+
+void AMinimapDataCollector::SetMinimapCentre()
+{
+	const ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (PlayerCharacter == nullptr) return;
+
+	const FVector PlayerLocation = PlayerCharacter->GetActorLocation();
+
+	float ScaledAxisCoordinate = PlayerLocation.X / MinimapDistanceWidth;
+
+	// Set material parameter for the Player X Position
+	if (!MaterialParamInstance->SetScalarParameterValue(FName("PlayerXPos"), ScaledAxisCoordinate))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap PlayerXPos!")));
+	}
+
+	ScaledAxisCoordinate = PlayerLocation.Y / MinimapDistanceWidth;
+
+	// Set material parameter for the Player Y Position
+	if (!MaterialParamInstance->SetScalarParameterValue(FName("PlayerYPos"), ScaledAxisCoordinate))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap PlayerYPos!")));
+	}
+}
+
+void AMinimapDataCollector::SetMinimapRotation()
+{
 	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	if (CameraManager == nullptr) return;
-	if (!MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), CameraManager->GetCameraRotation().Yaw))
+
+	// Rotation value needs to be a fraction of 360 degrees
+	const float RotationValue = CameraManager->GetCameraRotation().Yaw / 360;
+
+	// Set material parameter for camera rotation
+	if (!MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), RotationValue))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap RotationAmount!")));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap RotationAmount!")));
 	}
 }

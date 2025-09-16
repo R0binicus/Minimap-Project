@@ -34,4 +34,10 @@ protected:
 	float MinimapDistanceWidth = 50000.f;
 
 	void SetMinimapMaterialParams();
+
+	void SetMinimapDistanceWidth();
+
+	void SetMinimapCentre();
+
+	void SetMinimapRotation();
 };
