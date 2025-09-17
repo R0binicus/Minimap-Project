@@ -31,7 +31,7 @@ protected:
 	UPROPERTY()
 	UMaterialParameterCollectionInstance* MaterialParamInstance;
 
-	int32 DegreesInCircle = 360;
+	const int32 DegreesInCircle = 360;
 
 	UPROPERTY()
 	float MinimapRotation;
