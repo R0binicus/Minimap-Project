@@ -41,24 +41,14 @@ void AMinimapDataCollector::SetMinimapDistanceWidth()
 	if (MaterialParamInstance == nullptr) return;
 
 	// Set material parameter for the Minimap Distance Width
-	if (!MaterialParamInstance->SetScalarParameterValue(FName("MinimapDistanceWidth"), MinimapDistanceWidth))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap MinimapDistanceWidth!")));
-	}
+	MaterialParamInstance->SetScalarParameterValue(FName("MinimapDistanceWidth"), MinimapDistanceWidth);
 }
 
 void AMinimapDataCollector::SetMinimapScale()
 {
 	// Set material parameter for minimap multiplier and scale
-	if (!MaterialParamInstance->SetScalarParameterValue(FName("MinimapScaleMultiplier"), ScaleMultiplier))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap MinimapScaleMultiplier!")));
-	}
-
-	if (!MaterialParamInstance->SetScalarParameterValue(FName("MinimapScaleOffset"), ScaleOffset))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap MinimapScaleOffset!")));
-	}
+	MaterialParamInstance->SetScalarParameterValue(FName("MinimapScaleMultiplier"), ScaleMultiplier);
+	MaterialParamInstance->SetScalarParameterValue(FName("MinimapScaleOffset"), ScaleOffset);
 }
 
 void AMinimapDataCollector::SetMinimapMaterialParams()
@@ -86,24 +76,15 @@ void AMinimapDataCollector::SetMinimapCentre()
 
 	const FVector PlayerLocation = PlayerCharacter->GetActorLocation();
 
-	// Calculte scaled coordanate value from player X axis
-	float ScaledAxisCoordinate = PlayerLocation.X / MinimapDistanceWidth + XPosOffset;
-	ScaledAxisCoordinate = 1 - ScaledAxisCoordinate;
+	// Set scaled X and Y axis coordinates
+	float ScaledXAxisCoordinate = PlayerLocation.X / MinimapDistanceWidth + XPosOffset;
+	ScaledXAxisCoordinate = 1 - ScaledXAxisCoordinate;
 
-	// Set material parameter for the Player X Position
-	if (!MaterialParamInstance->SetScalarParameterValue(FName("PlayerXPos"), ScaledAxisCoordinate))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap PlayerXPos!")));
-	}
+	const float ScaledYAxisCoordinate = PlayerLocation.Y / MinimapDistanceWidth + YPosOffset;
 
-	// Calculte scaled coordanate value from player Y axis
-	ScaledAxisCoordinate = PlayerLocation.Y / MinimapDistanceWidth + YPosOffset;
-
-	// Set material parameter for the Player Y Position
-	if (!MaterialParamInstance->SetScalarParameterValue(FName("PlayerYPos"), ScaledAxisCoordinate))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap PlayerYPos!")));
-	}
+	// Set material parameter for the player positions
+	MaterialParamInstance->SetScalarParameterValue(FName("PlayerXPos"), ScaledXAxisCoordinate);
+	MaterialParamInstance->SetScalarParameterValue(FName("PlayerYPos"), ScaledYAxisCoordinate);
 }
 
 void AMinimapDataCollector::SetMinimapRotation()
@@ -114,9 +95,5 @@ void AMinimapDataCollector::SetMinimapRotation()
 	// Rotation value needs to be a fraction of 360 degrees
 	const float RotationValue = CameraManager->GetCameraRotation().Yaw / 360;
 
-	// Set material parameter for camera rotation
-	if (!MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), RotationValue))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap RotationAmount!")));
-	}
+	MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), RotationValue);
 }
