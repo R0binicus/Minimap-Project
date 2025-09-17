@@ -62,9 +62,9 @@ void AMinimapDataCollector::SetMinimapRotation()
 	if (CameraManager == nullptr) return;
 
 	// Rotation value needs to be a fraction of 360 degrees
-	const float RotationValue = CameraManager->GetCameraRotation().Yaw / DegreesInCircle;
+	MinimapRotation = CameraManager->GetCameraRotation().Yaw / DegreesInCircle;
 
-	MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), RotationValue);
+	MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), MinimapRotation);
 }
 
 void AMinimapDataCollector::SetPlayerBasedValues()
@@ -93,8 +93,10 @@ void AMinimapDataCollector::SetMinimapCentre(const ACharacter* PlayerCharacter)
 
 void AMinimapDataCollector::SetPlayerIndicatorRotation(const ACharacter* PlayerCharacter)
 {
-	// Set material parameter for player character rotation amount
-	const float PlayerRotation = PlayerCharacter->GetActorRotation().Yaw / -DegreesInCircle;
+	// Calculate rotation fraction needed for the minimap's player indicator
+	// Based on the minimap's rotation and the player character rotation
+	float PlayerRotation = PlayerCharacter->GetActorRotation().Yaw / -DegreesInCircle;
+	PlayerRotation = (-MinimapRotation - PlayerRotation) * -1;
 
 	MaterialParamInstance->SetScalarParameterValue(FName("PlayerRotation"), PlayerRotation);
 }

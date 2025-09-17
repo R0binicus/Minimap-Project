@@ -34,6 +34,9 @@ protected:
 	UPROPERTY()
 	int32 DegreesInCircle = 360;
 
+	UPROPERTY()
+	float MinimapRotation;
+
 	// Minimap Values
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = "Minimap")
 	float MinimapDistanceWidth = 50000.f;
