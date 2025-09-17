@@ -31,6 +31,9 @@ protected:
 	UPROPERTY()
 	UMaterialParameterCollectionInstance* MaterialParamInstance;
 
+	UPROPERTY()
+	int32 DegreesInCircle = 360;
+
 	// Minimap Values
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = "Minimap")
 	float MinimapDistanceWidth = 50000.f;
@@ -55,7 +58,11 @@ protected:
 
 	void UpdateMinimapParamValues();
 
-	void SetMinimapCentre();
+	void SetPlayerBasedValues();
+
+	void SetMinimapCentre(const ACharacter* PlayerCharacter);
+
+	void SetPlayerIndicatorRotation(const ACharacter* PlayerCharacter);
 
 	void SetMinimapRotation();
 };

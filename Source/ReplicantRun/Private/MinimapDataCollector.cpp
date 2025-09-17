@@ -52,23 +52,21 @@ void AMinimapDataCollector::UpdateMinimapParamValues()
 	if (MaterialParamInstance == nullptr) return;
 	if (GetWorld() == nullptr) return;
 	
-	SetMinimapCentre();
+	SetPlayerBasedValues();
 	SetMinimapRotation();
-
-	// Set material parameter for player character rotation amount
-	// May be used later for player character icon
-	/*const FRotator PlayerRotation = PlayerCharacter->GetActorRotation();
-	if (!MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), PlayerRotation.Yaw))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap RotationAmount!")));
-	}*/
 }
 
-void AMinimapDataCollector::SetMinimapCentre()
+void AMinimapDataCollector::SetPlayerBasedValues()
 {
 	const ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (PlayerCharacter == nullptr) return;
 
+	SetMinimapCentre(PlayerCharacter);
+	SetPlayerIndicatorRotation(PlayerCharacter);
+}
+
+void AMinimapDataCollector::SetMinimapCentre(const ACharacter* PlayerCharacter)
+{
 	const FVector PlayerLocation = PlayerCharacter->GetActorLocation();
 
 	// Set scaled X and Y axis coordinates
@@ -82,13 +80,21 @@ void AMinimapDataCollector::SetMinimapCentre()
 	MaterialParamInstance->SetScalarParameterValue(FName("PlayerYPos"), ScaledYAxisCoordinate);
 }
 
+void AMinimapDataCollector::SetPlayerIndicatorRotation(const ACharacter* PlayerCharacter)
+{
+	// Set material parameter for player character rotation amount
+	const float PlayerRotation = PlayerCharacter->GetActorRotation().Yaw / -DegreesInCircle;
+
+	MaterialParamInstance->SetScalarParameterValue(FName("PlayerRotation"), PlayerRotation);
+}
+
 void AMinimapDataCollector::SetMinimapRotation()
 {
 	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	if (CameraManager == nullptr) return;
 
 	// Rotation value needs to be a fraction of 360 degrees
-	const float RotationValue = CameraManager->GetCameraRotation().Yaw / 360;
+	const float RotationValue = CameraManager->GetCameraRotation().Yaw / DegreesInCircle;
 
 	MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), RotationValue);
 }
