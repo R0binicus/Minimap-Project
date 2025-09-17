@@ -31,7 +31,6 @@ protected:
 	UPROPERTY()
 	UMaterialParameterCollectionInstance* MaterialParamInstance;
 
-	UPROPERTY()
 	int32 DegreesInCircle = 360;
 
 	UPROPERTY()
