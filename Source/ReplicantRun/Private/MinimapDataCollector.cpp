@@ -52,8 +52,19 @@ void AMinimapDataCollector::UpdateMinimapParamValues()
 	if (MaterialParamInstance == nullptr) return;
 	if (GetWorld() == nullptr) return;
 	
-	SetPlayerBasedValues();
 	SetMinimapRotation();
+	SetPlayerBasedValues();
+}
+
+void AMinimapDataCollector::SetMinimapRotation()
+{
+	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	if (CameraManager == nullptr) return;
+
+	// Rotation value needs to be a fraction of 360 degrees
+	const float RotationValue = CameraManager->GetCameraRotation().Yaw / DegreesInCircle;
+
+	MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), RotationValue);
 }
 
 void AMinimapDataCollector::SetPlayerBasedValues()
@@ -86,15 +97,4 @@ void AMinimapDataCollector::SetPlayerIndicatorRotation(const ACharacter* PlayerC
 	const float PlayerRotation = PlayerCharacter->GetActorRotation().Yaw / -DegreesInCircle;
 
 	MaterialParamInstance->SetScalarParameterValue(FName("PlayerRotation"), PlayerRotation);
-}
-
-void AMinimapDataCollector::SetMinimapRotation()
-{
-	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
-	if (CameraManager == nullptr) return;
-
-	// Rotation value needs to be a fraction of 360 degrees
-	const float RotationValue = CameraManager->GetCameraRotation().Yaw / DegreesInCircle;
-
-	MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), RotationValue);
 }
