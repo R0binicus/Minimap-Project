@@ -20,6 +20,7 @@ void AMinimapDataCollector::BeginPlay()
 	Super::BeginPlay();
 
 	SetMinimapDistanceWidth();
+	SetMinimapScale();
 }
 
 // Called every frame
@@ -31,6 +32,33 @@ void AMinimapDataCollector::Tick(float DeltaTime)
 	// Would a function on a 0.1 second timer be better?
 	// Is there an event better place?
 	SetMinimapMaterialParams();
+}
+
+void AMinimapDataCollector::SetMinimapDistanceWidth()
+{
+	if (GetWorld() == nullptr) return;
+	MaterialParamInstance = GetWorld()->GetParameterCollectionInstance(MaterialParams);
+	if (MaterialParamInstance == nullptr) return;
+
+	// Set material parameter for the Minimap Distance Width
+	if (!MaterialParamInstance->SetScalarParameterValue(FName("MinimapDistanceWidth"), MinimapDistanceWidth))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap MinimapDistanceWidth!")));
+	}
+}
+
+void AMinimapDataCollector::SetMinimapScale()
+{
+	// Set material parameter for minimap multiplier and scale
+	if (!MaterialParamInstance->SetScalarParameterValue(FName("MinimapScaleMultiplier"), ScaleMultiplier))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap MinimapScaleMultiplier!")));
+	}
+
+	if (!MaterialParamInstance->SetScalarParameterValue(FName("MinimapScaleOffset"), ScaleOffset))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap MinimapScaleOffset!")));
+	}
 }
 
 void AMinimapDataCollector::SetMinimapMaterialParams()
@@ -51,19 +79,6 @@ void AMinimapDataCollector::SetMinimapMaterialParams()
 	}*/
 }
 
-void AMinimapDataCollector::SetMinimapDistanceWidth()
-{
-	if (GetWorld() == nullptr) return;
-	MaterialParamInstance = GetWorld()->GetParameterCollectionInstance(MaterialParams);
-	if (MaterialParamInstance == nullptr) return;
-
-	// Set material parameter for the Minimap Distance Width
-	if (!MaterialParamInstance->SetScalarParameterValue(FName("MinimapDistanceWidth"), MinimapDistanceWidth))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap MinimapDistanceWidth!")));
-	}
-}
-
 void AMinimapDataCollector::SetMinimapCentre()
 {
 	const ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -71,7 +86,9 @@ void AMinimapDataCollector::SetMinimapCentre()
 
 	const FVector PlayerLocation = PlayerCharacter->GetActorLocation();
 
-	float ScaledAxisCoordinate = PlayerLocation.X;// / MinimapDistanceWidth;
+	// Calculte scaled coordanate value from player X axis
+	float ScaledAxisCoordinate = PlayerLocation.X / MinimapDistanceWidth + XPosOffset;
+	ScaledAxisCoordinate = 1 - ScaledAxisCoordinate;
 
 	// Set material parameter for the Player X Position
 	if (!MaterialParamInstance->SetScalarParameterValue(FName("PlayerXPos"), ScaledAxisCoordinate))
@@ -79,7 +96,8 @@ void AMinimapDataCollector::SetMinimapCentre()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Failed to set minimap PlayerXPos!")));
 	}
 
-	ScaledAxisCoordinate = PlayerLocation.Y;// / MinimapDistanceWidth;
+	// Calculte scaled coordanate value from player Y axis
+	ScaledAxisCoordinate = PlayerLocation.Y / MinimapDistanceWidth + YPosOffset;
 
 	// Set material parameter for the Player Y Position
 	if (!MaterialParamInstance->SetScalarParameterValue(FName("PlayerYPos"), ScaledAxisCoordinate))
