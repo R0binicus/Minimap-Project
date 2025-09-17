@@ -24,13 +24,14 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Minimap Values
+	// Minimap material references
 	UPROPERTY(EditAnywhere, Category = "Minimap")
 	UMaterialParameterCollection* MaterialParams;
 
 	UPROPERTY()
 	UMaterialParameterCollectionInstance* MaterialParamInstance;
 
+	// Minimap Values
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = "Minimap")
 	float MinimapDistanceWidth = 50000.f;
 
@@ -49,12 +50,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
 	float YPosOffset = 0.0015f;
 
-	// Set Minimap material Functions
-	void SetMinimapDistanceWidth();
+	// Set Minimap Material Parameter Functions
+	void SetMinimapInitialValues();
 
-	void SetMinimapScale();
-
-	void SetMinimapMaterialParams();
+	void UpdateMinimapParamValues();
 
 	void SetMinimapCentre();
 
