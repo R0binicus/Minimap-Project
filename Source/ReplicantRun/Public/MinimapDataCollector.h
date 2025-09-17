@@ -30,7 +30,7 @@ protected:
 	UPROPERTY()
 	UMaterialParameterCollectionInstance* MaterialParamInstance;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Category = "Minimap")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = "Minimap")
 	float MinimapDistanceWidth = 50000.f;
 
 	void SetMinimapMaterialParams();
