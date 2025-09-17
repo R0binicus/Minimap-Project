@@ -31,6 +31,11 @@ protected:
 	UPROPERTY()
 	UMaterialParameterCollectionInstance* MaterialParamInstance;
 
+	const int32 DegreesInCircle = 360;
+
+	UPROPERTY()
+	float MinimapRotation;
+
 	// Minimap Values
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = "Minimap")
 	float MinimapDistanceWidth = 50000.f;
@@ -41,8 +46,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
 	float ScaleOffset = 0.475f;
 
-	// Values for minimap zoom:
-	// 0.4 0.3,    0.35   0.325,    0.3 0.35,    0.25 0.375,    0.2 0.4,    0.15 0.425,    0.1 0.45,    0.05 0.475
+	// Values for material scale and offset:
+	// 3.0 -1.0,    2.5 -0.75,     2.0 -0.5,     0.4 0.3,    0.35   0.325,    0.3 0.35,    0.25 0.375,    0.2 0.4,    0.15 0.425,    0.1 0.45,    0.05 0.475
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
 	float XPosOffset = 0.9405f; // Originally 1 - 0.0595
@@ -55,7 +60,11 @@ protected:
 
 	void UpdateMinimapParamValues();
 
-	void SetMinimapCentre();
+	void SetPlayerBasedValues();
+
+	void SetMinimapCentre(const ACharacter* PlayerCharacter);
+
+	void SetPlayerIndicatorRotation(const ACharacter* PlayerCharacter);
 
 	void SetMinimapRotation();
 };

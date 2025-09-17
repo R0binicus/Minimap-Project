@@ -52,23 +52,32 @@ void AMinimapDataCollector::UpdateMinimapParamValues()
 	if (MaterialParamInstance == nullptr) return;
 	if (GetWorld() == nullptr) return;
 	
-	SetMinimapCentre();
 	SetMinimapRotation();
-
-	// Set material parameter for player character rotation amount
-	// May be used later for player character icon
-	/*const FRotator PlayerRotation = PlayerCharacter->GetActorRotation();
-	if (!MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), PlayerRotation.Yaw))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set minimap RotationAmount!")));
-	}*/
+	SetPlayerBasedValues();
 }
 
-void AMinimapDataCollector::SetMinimapCentre()
+void AMinimapDataCollector::SetMinimapRotation()
+{
+	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	if (CameraManager == nullptr) return;
+
+	// Rotation value needs to be a fraction of 360 degrees
+	MinimapRotation = CameraManager->GetCameraRotation().Yaw / DegreesInCircle;
+
+	MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), MinimapRotation);
+}
+
+void AMinimapDataCollector::SetPlayerBasedValues()
 {
 	const ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (PlayerCharacter == nullptr) return;
 
+	SetMinimapCentre(PlayerCharacter);
+	SetPlayerIndicatorRotation(PlayerCharacter);
+}
+
+void AMinimapDataCollector::SetMinimapCentre(const ACharacter* PlayerCharacter)
+{
 	const FVector PlayerLocation = PlayerCharacter->GetActorLocation();
 
 	// Set scaled X and Y axis coordinates
@@ -82,13 +91,12 @@ void AMinimapDataCollector::SetMinimapCentre()
 	MaterialParamInstance->SetScalarParameterValue(FName("PlayerYPos"), ScaledYAxisCoordinate);
 }
 
-void AMinimapDataCollector::SetMinimapRotation()
+void AMinimapDataCollector::SetPlayerIndicatorRotation(const ACharacter* PlayerCharacter)
 {
-	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
-	if (CameraManager == nullptr) return;
+	// Calculate rotation fraction needed for the minimap's player indicator
+	// Based on the minimap's rotation and the player character rotation
+	float PlayerRotation = PlayerCharacter->GetActorRotation().Yaw / -DegreesInCircle;
+	PlayerRotation = (-MinimapRotation - PlayerRotation) * -1;
 
-	// Rotation value needs to be a fraction of 360 degrees
-	const float RotationValue = CameraManager->GetCameraRotation().Yaw / 360;
-
-	MaterialParamInstance->SetScalarParameterValue(FName("RotationAmount"), RotationValue);
+	MaterialParamInstance->SetScalarParameterValue(FName("PlayerRotation"), PlayerRotation);
 }
