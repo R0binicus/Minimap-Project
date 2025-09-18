@@ -96,7 +96,7 @@ void AMinimapDataCollector::SetPlayerIndicatorRotation(const ACharacter* PlayerC
 	// Calculate rotation fraction needed for the minimap's player indicator
 	// Based on the minimap's rotation and the player character rotation
 	float PlayerRotation = PlayerCharacter->GetActorRotation().Yaw / -DegreesInCircle;
-	PlayerRotation = (-MinimapRotation - PlayerRotation) * -1;
+	PlayerRotation = MinimapRotation + PlayerRotation;
 
 	MaterialParamInstance->SetScalarParameterValue(FName("PlayerRotation"), PlayerRotation);
 }
