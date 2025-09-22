@@ -19,13 +19,13 @@ struct FIconDisplayData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IconDisplayData")
 	FColor IconColour;
 
-	FIconDisplayData() : IconImage(nullptr), IconScale(0.f), IconColour(FColor())
+	FIconDisplayData() : IconImage(nullptr), IconScale(1.f), IconColour(FColor(FColor::White))
 	{
 
 	}
 
-	FIconDisplayData(UTexture2D* IconImage, float IconScale, FColor IconColour) :
-		IconImage(IconImage), IconScale(IconScale), IconColour(IconColour)
+	FIconDisplayData(UTexture2D* InIconImage, float InIconScale, FColor InIconColour) :
+		IconImage(InIconImage), IconScale(InIconScale), IconColour(InIconColour)
 	{
 
 	}
