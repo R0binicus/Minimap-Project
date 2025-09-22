@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "IconDisplayData.h"
 #include "MinimapIconable.generated.h"
 
 UINTERFACE(MinimalAPI, Blueprintable)
@@ -18,7 +19,7 @@ class REPLICANTRUN_API IMinimapIconable
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = MyInterface)
-	FString GetMapDisplayInfo();
+	FIconDisplayData GetIconDisplayData();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = MyInterface)
 	FVector GetObjectPostion();
