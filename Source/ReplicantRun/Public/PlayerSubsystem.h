@@ -18,7 +18,8 @@ class REPLICANTRUN_API UPlayerSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 private:
-	TArray<TWeakInterfacePtr<IMinimapIconable>> PlayerList[6];
+	TArray<TWeakInterfacePtr<IMinimapIconable>>* PlayerRefArray = new TArray<TWeakInterfacePtr<IMinimapIconable>>;
+	TArray<TWeakInterfacePtr<IMinimapIconable>>* MapDisplayArray = new TArray<TWeakInterfacePtr<IMinimapIconable>>;;
 	
 public:
 	 // Begin USubsystem
@@ -28,14 +29,23 @@ public:
 	
 	// When player is created/destroyed add/remove from list
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void AddPlayer();
+	void AddPlayer(TScriptInterface<IMinimapIconable> Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void RemovePlayer();
+	void EnableMapDisplay(TScriptInterface<IMinimapIconable> Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void EnableMapDisplay();
+	void RemovePlayer(TScriptInterface<IMinimapIconable> Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
 	TArray<FIconDisplayData> GetMapIconData();
+
+	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
+	TArray<FVector> GetMapIconLocations();
+
+	/*UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
+	FVector GetMainPlayerLocation();*/
+
+private:
+	void RemoveInterfaceFromArray(TArray<TWeakInterfacePtr<IMinimapIconable>>* Array, TScriptInterface<IMinimapIconable> Player);
 };
