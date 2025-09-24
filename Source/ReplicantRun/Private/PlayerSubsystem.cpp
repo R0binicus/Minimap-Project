@@ -113,12 +113,12 @@ void UPlayerSubsystem::RemovePlayer(UObject* PlayerInterface)
 
 TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 {
+	TArray<FIconDisplayData> IconDataArray;
+
 	if (MapDisplayArray == nullptr)
 	{
-		return TArray<FIconDisplayData>();
+		return IconDataArray;
 	}
-
-	TArray<FIconDisplayData> IconDataArray;
 
 	for (size_t i = 0; i < MapDisplayArray->Num(); i++)
 	{
@@ -132,7 +132,7 @@ TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 			continue;
 		}
 
-		//IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPostion((*MapDisplayArray)[i].Get()));
+		IconDataArray.Add(IMinimapIconable::Execute_GetIconDisplayData((*MapDisplayArray)[i].Get()));
 	}
 	return IconDataArray;
 }
@@ -143,7 +143,6 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 
 	if (MapDisplayArray == nullptr)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("MapDisplayArray == nullptr")));
 		return IconPositionArray;
 	}
 
@@ -151,23 +150,19 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 	{
 		if (!MapDisplayArray->IsValidIndex(i))
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("iNVALID INDEX")));
 			continue;
 		}
 
 		if ((*MapDisplayArray)[i] == nullptr)
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("(*MapDisplayArray)[i] == nullptr")));
 			continue;
 		}
 
 		// IconPostionArray.Add((*MapDisplayArray)[i]->GetObjectPostion());
-		//IconPositionArray.Add((*MapDisplayArray)[i]->GetObjectPostion());
 		//TArray<TWeakObjectPtr<UObject>> Array2 = *MapDisplayArray;
 		//TWeakObjectPtr<UObject> obj = Array2[i];
 
 		//IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPostion(obj.Get()));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Adding to array")));
 		IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPostion((*MapDisplayArray)[i].Get()));
 	}
 	return IconPositionArray;
