@@ -13,24 +13,28 @@ void UPlayerSubsystem::Deinitialize()
 
 }
 
-void UPlayerSubsystem::AddPlayer(UObject* PlayerInterface)
+void UPlayerSubsystem::AddPlayer(TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	if (PlayerRefArray == nullptr)
 	{
 		return;
 	}
 
-	if (!PlayerInterface)
+	UObject* PlayerObj = PlayerInterface.GetObject();
+
+	if (!PlayerObj)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerInterface is null")));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerObj is null")));
 		return;
 	}
 
-	if (!PlayerInterface->Implements<UMinimapIconable>())
+	if (!PlayerObj->Implements<UMinimapIconable>())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerInterface is not implemented")));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerObj is not implemented")));
 		return;
 	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("oLAYERoBJ VALID")));
 
 	//PlayerInterface.GetObject()
 
@@ -88,24 +92,25 @@ void UPlayerSubsystem::AddPlayer(UObject* PlayerInterface)
 
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Interface is NOT CASTING!")));
 
-	PlayerRefArray->Add(PlayerInterface);
+	PlayerRefArray->Add(PlayerObj);
 	//PlayerRefArray->Add(MinimapIconable);
 }
 
-void UPlayerSubsystem::EnableMapDisplay(UObject* PlayerInterface)
+void UPlayerSubsystem::EnableMapDisplay(TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	if (MapDisplayArray == nullptr)
 	{
 		return;
 	}
-	if (!PlayerInterface)
+	UObject* PlayerObj = PlayerInterface.GetObject();
+	if (!PlayerObj)
 	{
 		return;
 	}
-	MapDisplayArray->Add(PlayerInterface);
+	MapDisplayArray->Add(PlayerObj);
 }
 
-void UPlayerSubsystem::RemovePlayer(UObject* PlayerInterface)
+void UPlayerSubsystem::RemovePlayer(TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	RemoveInterfaceFromArray(PlayerRefArray, PlayerInterface);
 	RemoveInterfaceFromArray(MapDisplayArray, PlayerInterface);
@@ -122,6 +127,7 @@ TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 
 	for (size_t i = 0; i < MapDisplayArray->Num(); i++)
 	{
+		// Too many validation checks???
 		if (!MapDisplayArray->IsValidIndex(i))
 		{
 			continue;
@@ -130,6 +136,11 @@ TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 		if ((*MapDisplayArray)[i] == nullptr)
 		{
 			continue;
+		}
+
+		if (!(*MapDisplayArray)[i]->Implements<UMinimapIconable>())
+		{
+			return;
 		}
 
 		IconDataArray.Add(IMinimapIconable::Execute_GetIconDisplayData((*MapDisplayArray)[i].Get()));
@@ -148,6 +159,7 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 
 	for (size_t i = 0; i < MapDisplayArray->Num(); i++)
 	{
+		// Too many validation checks???
 		if (!MapDisplayArray->IsValidIndex(i))
 		{
 			continue;
@@ -158,12 +170,17 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 			continue;
 		}
 
+		if (!(*MapDisplayArray)[i]->Implements<UMinimapIconable>())
+		{
+			return;
+		}
+
 		// IconPostionArray.Add((*MapDisplayArray)[i]->GetObjectPostion());
 		//TArray<TWeakObjectPtr<UObject>> Array2 = *MapDisplayArray;
 		//TWeakObjectPtr<UObject> obj = Array2[i];
 
 		//IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPostion(obj.Get()));
-		IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPostion((*MapDisplayArray)[i].Get()));
+		IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPosition((*MapDisplayArray)[i].Get()));
 	}
 	return IconPositionArray;
 }
@@ -173,7 +190,7 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 //	return FVector();
 //}
 
-void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>* Array, UObject* PlayerInterface)
+void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>* Array, TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	if (Array == nullptr)
 	{
@@ -186,23 +203,25 @@ void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>*
 		return;
 	}*/
 
-	if (!PlayerInterface)
+	UObject* PlayerObj = PlayerInterface.GetObject();
+
+	if (!PlayerObj)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerInterface is null")));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerObj is null")));
 		return;
 	}
 
-	if (!PlayerInterface->Implements<UMinimapIconable>())
+	if (!PlayerObj->Implements<UMinimapIconable>())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerInterface is not implemented")));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerObj is not implemented")));
 		return;
 	}
 
 	// Don't remove if it's not in the array
 	TArray<TWeakObjectPtr<UObject>> Array2 = *Array;
-	if (!Array2.Contains(PlayerInterface))
+	if (!Array2.Contains(PlayerObj))
 	{
 		return;
 	}
-	Array->Remove(PlayerInterface);
+	Array->Remove(PlayerObj);
 }

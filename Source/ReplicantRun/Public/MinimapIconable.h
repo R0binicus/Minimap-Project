@@ -22,5 +22,5 @@ public:
 	FIconDisplayData GetIconDisplayData();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = MyInterface)
-	FVector GetObjectPostion();
+	FVector GetObjectPosition();
 };

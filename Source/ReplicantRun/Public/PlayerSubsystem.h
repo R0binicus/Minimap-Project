@@ -32,13 +32,13 @@ public:
 	
 	// When player is created/destroyed add/remove from list
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void AddPlayer(UObject* PlayerInterface);
+	void AddPlayer(TScriptInterface<IMinimapIconable> Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void EnableMapDisplay(UObject* PlayerInterface);
+	void EnableMapDisplay(TScriptInterface<IMinimapIconable> Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void RemovePlayer(UObject* PlayerInterface);
+	void RemovePlayer(TScriptInterface<IMinimapIconable> Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
 	TArray<FIconDisplayData> GetMapIconData();
@@ -50,5 +50,5 @@ public:
 	FVector GetMainPlayerLocation();*/
 
 private:
-	void RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>* Array, UObject* PlayerInterface);
+	void RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>* Array, TScriptInterface<IMinimapIconable> PlayerInterface);
 };
