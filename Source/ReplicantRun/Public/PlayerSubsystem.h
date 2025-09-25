@@ -23,7 +23,6 @@ private:
 	TArray<TWeakObjectPtr<UObject>>* PlayerRefArray = new TArray<TWeakObjectPtr<UObject>>;
 	TArray<TWeakObjectPtr<UObject>>* MapDisplayArray = new TArray<TWeakObjectPtr<UObject>>;
 	
-	
 public:
 	 // Begin USubsystem
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -32,13 +31,13 @@ public:
 	
 	// When player is created/destroyed add/remove from list
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void AddPlayer(TScriptInterface<IMinimapIconable> Player);
+	void AddPlayer(const TScriptInterface<IMinimapIconable> Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void EnableMapDisplay(TScriptInterface<IMinimapIconable> Player);
+	void EnableMapDisplay(const TScriptInterface<IMinimapIconable> Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void RemovePlayer(TScriptInterface<IMinimapIconable> Player);
+	void RemovePlayer(const TScriptInterface<IMinimapIconable> Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
 	TArray<FIconDisplayData> GetMapIconData();
@@ -50,5 +49,5 @@ public:
 	FVector GetMainPlayerLocation();*/
 
 private:
-	void RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>* Array, TScriptInterface<IMinimapIconable> PlayerInterface);
+	void RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>* Array, const TScriptInterface<IMinimapIconable> PlayerInterface);
 };

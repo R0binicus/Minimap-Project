@@ -13,7 +13,7 @@ void UPlayerSubsystem::Deinitialize()
 
 }
 
-void UPlayerSubsystem::AddPlayer(TScriptInterface<IMinimapIconable> PlayerInterface)
+void UPlayerSubsystem::AddPlayer(const TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	if (PlayerRefArray == nullptr)
 	{
@@ -96,21 +96,29 @@ void UPlayerSubsystem::AddPlayer(TScriptInterface<IMinimapIconable> PlayerInterf
 	//PlayerRefArray->Add(MinimapIconable);
 }
 
-void UPlayerSubsystem::EnableMapDisplay(TScriptInterface<IMinimapIconable> PlayerInterface)
+void UPlayerSubsystem::EnableMapDisplay(const TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	if (MapDisplayArray == nullptr)
 	{
 		return;
 	}
+
 	UObject* PlayerObj = PlayerInterface.GetObject();
+
 	if (!PlayerObj)
 	{
 		return;
 	}
+
+	if (!PlayerObj->Implements<UMinimapIconable>())
+	{
+		return;
+	}
+
 	MapDisplayArray->Add(PlayerObj);
 }
 
-void UPlayerSubsystem::RemovePlayer(TScriptInterface<IMinimapIconable> PlayerInterface)
+void UPlayerSubsystem::RemovePlayer(const TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	RemoveInterfaceFromArray(PlayerRefArray, PlayerInterface);
 	RemoveInterfaceFromArray(MapDisplayArray, PlayerInterface);
@@ -125,6 +133,8 @@ TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 		return IconDataArray;
 	}
 
+	TWeakObjectPtr<UObject> PlayerPtr;
+
 	for (size_t i = 0; i < MapDisplayArray->Num(); i++)
 	{
 		// Too many validation checks???
@@ -133,17 +143,19 @@ TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 			continue;
 		}
 
-		if ((*MapDisplayArray)[i] == nullptr)
+		PlayerPtr = (*MapDisplayArray)[i];
+
+		if (PlayerPtr == nullptr)
 		{
 			continue;
 		}
 
-		if (!(*MapDisplayArray)[i]->Implements<UMinimapIconable>())
+		if (!PlayerPtr->Implements<UMinimapIconable>())
 		{
-			return;
+			continue;
 		}
 
-		IconDataArray.Add(IMinimapIconable::Execute_GetIconDisplayData((*MapDisplayArray)[i].Get()));
+		IconDataArray.Add(IMinimapIconable::Execute_GetIconDisplayData(PlayerPtr.Get()));
 	}
 	return IconDataArray;
 }
@@ -157,6 +169,8 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 		return IconPositionArray;
 	}
 
+	TWeakObjectPtr<UObject> PlayerPtr;
+
 	for (size_t i = 0; i < MapDisplayArray->Num(); i++)
 	{
 		// Too many validation checks???
@@ -165,14 +179,16 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 			continue;
 		}
 
-		if ((*MapDisplayArray)[i] == nullptr)
+		PlayerPtr = (*MapDisplayArray)[i];
+
+		if (PlayerPtr == nullptr)
 		{
 			continue;
 		}
 
-		if (!(*MapDisplayArray)[i]->Implements<UMinimapIconable>())
+		if (!PlayerPtr->Implements<UMinimapIconable>())
 		{
-			return;
+			continue;
 		}
 
 		// IconPostionArray.Add((*MapDisplayArray)[i]->GetObjectPostion());
@@ -180,7 +196,7 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 		//TWeakObjectPtr<UObject> obj = Array2[i];
 
 		//IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPostion(obj.Get()));
-		IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPosition((*MapDisplayArray)[i].Get()));
+		IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPosition(PlayerPtr.Get()));
 	}
 	return IconPositionArray;
 }
@@ -190,7 +206,7 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 //	return FVector();
 //}
 
-void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>* Array, TScriptInterface<IMinimapIconable> PlayerInterface)
+void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>* Array, const TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	if (Array == nullptr)
 	{
@@ -207,13 +223,11 @@ void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>*
 
 	if (!PlayerObj)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerObj is null")));
 		return;
 	}
 
 	if (!PlayerObj->Implements<UMinimapIconable>())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerObj is not implemented")));
 		return;
 	}
 
