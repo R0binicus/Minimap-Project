@@ -40,8 +40,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
 	TArray<FVector> GetMapIconLocations();
 
-	/*UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	FVector GetMainPlayerLocation();*/
+	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
+	FVector GetMainPlayerLocation();
 
 private:
 	void RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>* Array, const TScriptInterface<IMinimapIconable> PlayerInterface);

@@ -134,10 +134,37 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 	return IconPositionArray;
 }
 
-//FVector UPlayerSubsystem::GetMainPlayerLocation()
-//{
-//	return FVector();
-//}
+FVector UPlayerSubsystem::GetMainPlayerLocation()
+{
+	if (PlayerRefArray == nullptr)
+	{
+		return FVector();
+	}
+	if (MapDisplayArray == nullptr)
+	{
+		return FVector();
+	}
+
+	TArray<TWeakObjectPtr<UObject>> RefArray2 = *PlayerRefArray;
+	TArray<TWeakObjectPtr<UObject>> DisplayArray2 = *MapDisplayArray;
+
+	TWeakObjectPtr<UObject> PlayerPtr;
+
+	for (size_t i = 0; i < PlayerRefArray->Num(); i++)
+	{
+		PlayerPtr = (*PlayerRefArray)[i];
+		if (!DisplayArray2.Contains(PlayerPtr))
+		{
+			if (!(PlayerPtr->Implements<UMinimapIconable>()))
+			{
+				continue;
+			}
+			return (IMinimapIconable::Execute_GetObjectPosition(PlayerPtr.Get()));
+		}
+	}
+
+	return FVector();
+}
 
 void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>* Array, const TScriptInterface<IMinimapIconable> PlayerInterface)
 {
