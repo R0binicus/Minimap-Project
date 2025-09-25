@@ -24,11 +24,6 @@ private:
 	TArray<TWeakObjectPtr<UObject>>* MapDisplayArray = new TArray<TWeakObjectPtr<UObject>>;
 	
 public:
-	 // Begin USubsystem
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	 // End USubsystem
-	virtual void Deinitialize() override;
-	
 	// When player is created/destroyed add/remove from list
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
 	void AddPlayer(const TScriptInterface<IMinimapIconable> Player);

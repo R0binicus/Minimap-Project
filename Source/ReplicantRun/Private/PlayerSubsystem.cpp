@@ -3,16 +3,7 @@
 #include "PlayerSubsystem.h"
 #include "UObject/WeakInterfacePtr.h"
 
-void UPlayerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
-{
-	
-}
-
-void UPlayerSubsystem::Deinitialize()
-{
-
-}
-
+// Add player to PlayerRefArray
 void UPlayerSubsystem::AddPlayer(const TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	if (PlayerRefArray == nullptr)
@@ -24,78 +15,18 @@ void UPlayerSubsystem::AddPlayer(const TScriptInterface<IMinimapIconable> Player
 
 	if (!PlayerObj)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerObj is null")));
 		return;
 	}
 
 	if (!PlayerObj->Implements<UMinimapIconable>())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("PlayerObj is not implemented")));
 		return;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("oLAYERoBJ VALID")));
-
-	//PlayerInterface.GetObject()
-
-	//FVector Vector = IMinimapIconable::Execute_GetObjectPostion();
-
-	//FVector Vector = IMinimapIconable::Execute_GetObjectPostion(PlayerInterface.GetObject());
-
-	// Why doesn't think work???
-	//if (MapIconActor->GetClass()->ImplementsInterface(UMinimapIconable::StaticClass()))//Implements<IMinimapIconable>())
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("does not implement iconable")));
-	//	//return;
-	//}
-
-	//UMinimapIconable* MinimapIconable = Cast<UMinimapIconable>(MapIconActor);
-
-	//if (PlayerInterface->Implements<UMinimapIconable>())//Implements<IMinimapIconable>())
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("does not implement iconable")));
-	//	return;
-	//}
-
-
-	//TScriptInterface<UMinimapIconable> IconableInterface = Cast<UMinimapIconable>(MapIconActor);
-
-	//TScriptInterface<UMinimapIconable> Player = MapIconActor;
-
-	//if (IconableInterface == nullptr)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("IconableInterface is nullptr")));
-	//	return;
-	//}
-
-	/*if (TargetActor->GetClass()->ImplementsInterface(UInterfaceCoversArea::StaticClass()))
-	{
-		CurrentRange -= IInterfaceCoversArea::Execute_GetAreaCoverageRadius(TargetActor);
-	}*/
-
-	//IMinimapIconable* Interface = Player.GetInterface();
-	//TScriptInterface<IMinimapIconable>::UObjectType* Interface2 = Player.GetObject();
-
-	//if (Interface2 == nullptr)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Interface is nullptr")));
-	//	return;
-	//}
-
-	//IMinimapIconable* TheInterface = Cast<IMinimapIconable>(Interface2);
-	//if (TheInterface)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Interface is good!")));
-	//	PlayerRefArray->Add(TheInterface);
-	//	return;
-	//}
-
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Interface is NOT CASTING!")));
-
 	PlayerRefArray->Add(PlayerObj);
-	//PlayerRefArray->Add(MinimapIconable);
 }
 
+// Add player to MapDisplayArray
 void UPlayerSubsystem::EnableMapDisplay(const TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	if (MapDisplayArray == nullptr)
@@ -124,6 +55,7 @@ void UPlayerSubsystem::RemovePlayer(const TScriptInterface<IMinimapIconable> Pla
 	RemoveInterfaceFromArray(MapDisplayArray, PlayerInterface);
 }
 
+// Access gets relevant interface's GetMapIconData and returns them as an array
 TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 {
 	TArray<FIconDisplayData> IconDataArray;
@@ -160,6 +92,7 @@ TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 	return IconDataArray;
 }
 
+// Access gets relevant interface's GetObjectPosition and returns them as an array
 TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 {
 	TArray<FVector> IconPositionArray;
