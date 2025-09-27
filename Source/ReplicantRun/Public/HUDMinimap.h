@@ -69,4 +69,10 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void SetPlayerLocation();
+
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void DisplayIcons();
+
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void CreateIcon(const FVector Location);
 };
