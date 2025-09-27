@@ -9,7 +9,7 @@ struct FIconDisplayData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IconDisplayData")
-	UTexture2D* IconImage;
+	TObjectPtr<UTexture2D> IconImage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IconDisplayData")
 	float IconScale;

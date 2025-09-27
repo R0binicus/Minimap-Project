@@ -24,10 +24,10 @@ protected:
 
 	// Minimap material references
 	UPROPERTY(EditAnywhere, Category = "Minimap")
-	UMaterialParameterCollection* MaterialParams;
+	TObjectPtr<UMaterialParameterCollection> MaterialParams;
 
 	UPROPERTY()
-	UMaterialParameterCollectionInstance* MaterialParamInstance;
+	TObjectPtr<UMaterialParameterCollectionInstance> MaterialParamInstance;
 
 	const int32 DegreesInCircle = 360;
 
@@ -60,9 +60,9 @@ protected:
 
 	void SetPlayerBasedValues();
 
-	void SetMinimapCentre(const ACharacter* PlayerCharacter);
+	void SetMinimapCentre(const TObjectPtr<ACharacter> PlayerCharacter);
 
-	void SetPlayerIndicatorRotation(const ACharacter* PlayerCharacter);
+	void SetPlayerIndicatorRotation(const TObjectPtr<ACharacter> PlayerCharacter);
 
 	void SetMinimapRotation();
 };

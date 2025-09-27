@@ -90,7 +90,7 @@ FVector UPlayerSubsystem::GetMainPlayerLocation()
 
 void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>& Array, const TScriptInterface<IMinimapIconable> PlayerInterface)
 {
-	UObject* PlayerObj = PlayerInterface.GetObject();
+	TObjectPtr<UObject> PlayerObj = PlayerInterface.GetObject();
 
 	if (!PlayerObj)
 	{
