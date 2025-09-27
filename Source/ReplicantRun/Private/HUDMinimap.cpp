@@ -101,4 +101,21 @@ void UHUDMinimap::CreateIcon(const FVector Location)
 	CanvasSlot->SetAnchors(FAnchors(AnchorValue));
 	CanvasSlot->SetPosition(FVector2D((MainPlayerLocation - Location) * IconLocationMultiplier));
 	NewIconWidget->SetRenderTransformAngle(-((1-CameraYaw)+90));
+	CheckIconLocation(NewIconWidget, CanvasSlot->GetPosition());
+}
+
+void UHUDMinimap::CheckIconLocation(UMinimapIcon* Icon, const FVector2D IconPosition)
+{
+	if (!Icon)
+	{
+		return;
+	}
+
+	const float X = IconPosition.X;
+	const float Y = IconPosition.Y;
+
+	if (X >= MinimapIconCutoffWidth || X <= -MinimapIconCutoffWidth || Y >= MinimapIconCutoffWidth || Y <= -MinimapIconCutoffWidth)
+	{
+		Icon->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }

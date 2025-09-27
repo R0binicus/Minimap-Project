@@ -75,4 +75,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void CreateIcon(const FVector Location);
+
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void CheckIconLocation(UMinimapIcon* Icon, const FVector2D IconPosition);
 };
