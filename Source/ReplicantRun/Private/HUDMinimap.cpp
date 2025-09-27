@@ -63,7 +63,7 @@ void UHUDMinimap::DisplayIcons()
 	{
 		CreateIcon(IconLocations[i]);
 	}
-	//IconCanvasPanel->SetRenderTransformAngle(-(CameraYaw-90));
+	IconCanvasPanel->SetRenderTransformAngle(-(CameraYaw-90));
 }
 
 void UHUDMinimap::CreateIcon(const FVector Location)
@@ -100,4 +100,5 @@ void UHUDMinimap::CreateIcon(const FVector Location)
 	CanvasSlot->SetAlignment(FVector2D(AnchorValue, AnchorValue));
 	CanvasSlot->SetAnchors(FAnchors(AnchorValue));
 	CanvasSlot->SetPosition(FVector2D((MainPlayerLocation - Location) * IconLocationMultiplier));
+	NewIconWidget->SetRenderTransformAngle(-((1-CameraYaw)+90));
 }
