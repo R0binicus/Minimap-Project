@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "MinimapIconable.h"
-#include "UObject/WeakInterfacePtr.h"
 #include "PlayerSubsystem.generated.h"
 
 /**
@@ -16,21 +15,21 @@ class REPLICANTRUN_API UPlayerSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 private:
-	//TArray<TWeakInterfacePtr<IMinimapIconable>>* PlayerRefArray = new TArray<TWeakInterfacePtr<IMinimapIconable>>;
-	//TArray<TWeakInterfacePtr<IMinimapIconable>>* MapDisplayArray = new TArray<TWeakInterfacePtr<IMinimapIconable>>;
-	TArray<TWeakObjectPtr<UObject>>* PlayerRefArray = new TArray<TWeakObjectPtr<UObject>>;
-	TArray<TWeakObjectPtr<UObject>>* MapDisplayArray = new TArray<TWeakObjectPtr<UObject>>;
+	UPROPERTY()
+	TArray<TWeakObjectPtr<UObject>> PlayerRefArray;
+
+	UPROPERTY()
+	TArray<TWeakObjectPtr<UObject>> MapDisplayArray;
 	
 public:
-	// When player is created/destroyed add/remove from list
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void AddPlayer(const TScriptInterface<IMinimapIconable> Player);
+	void AddPlayer(const TScriptInterface<IMinimapIconable>& Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void EnableMapDisplay(const TScriptInterface<IMinimapIconable> Player);
+	void EnableMapDisplay(const TScriptInterface<IMinimapIconable>& Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	void RemovePlayer(const TScriptInterface<IMinimapIconable> Player);
+	void RemovePlayer(const TScriptInterface<IMinimapIconable>& Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
 	TArray<FIconDisplayData> GetMapIconData();
@@ -42,5 +41,5 @@ public:
 	FVector GetMainPlayerLocation();
 
 private:
-	void RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>* Array, const TScriptInterface<IMinimapIconable> PlayerInterface);
+	void RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>& Array, const TScriptInterface<IMinimapIconable> PlayerInterface);
 };
