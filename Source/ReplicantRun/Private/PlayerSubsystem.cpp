@@ -1,7 +1,6 @@
 #include "PlayerSubsystem.h"
 #include "UObject/WeakInterfacePtr.h"
 
-// Add player to PlayerRefArray
 void UPlayerSubsystem::AddPlayer(const TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	if (PlayerRefArray == nullptr)
@@ -24,7 +23,6 @@ void UPlayerSubsystem::AddPlayer(const TScriptInterface<IMinimapIconable> Player
 	PlayerRefArray->Add(PlayerObj);
 }
 
-// Add player to MapDisplayArray
 void UPlayerSubsystem::EnableMapDisplay(const TScriptInterface<IMinimapIconable> PlayerInterface)
 {
 	if (MapDisplayArray == nullptr)
@@ -53,7 +51,6 @@ void UPlayerSubsystem::RemovePlayer(const TScriptInterface<IMinimapIconable> Pla
 	RemoveInterfaceFromArray(MapDisplayArray, PlayerInterface);
 }
 
-// Access gets relevant interface's GetMapIconData and returns them as an array
 TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 {
 	TArray<FIconDisplayData> IconDataArray;
@@ -90,7 +87,6 @@ TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 	return IconDataArray;
 }
 
-// Access gets relevant interface's GetObjectPosition and returns them as an array
 TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 {
 	TArray<FVector> IconPositionArray;

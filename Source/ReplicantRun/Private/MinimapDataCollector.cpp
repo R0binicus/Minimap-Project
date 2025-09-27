@@ -4,14 +4,12 @@
 #include "Materials/MaterialParameterCollectionInstance.h"
 #include "GameFramework/Character.h"
 
-// Sets default values
 AMinimapDataCollector::AMinimapDataCollector()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
 void AMinimapDataCollector::BeginPlay()
 {
 	Super::BeginPlay();
@@ -19,7 +17,6 @@ void AMinimapDataCollector::BeginPlay()
 	SetMinimapInitialValues();
 }
 
-// Called every frame
 void AMinimapDataCollector::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
