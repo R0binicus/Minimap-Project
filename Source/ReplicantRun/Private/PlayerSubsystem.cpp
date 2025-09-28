@@ -24,11 +24,6 @@ TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 
 	for (size_t i = 0; i < MapDisplayArray.Num(); i++)
 	{
-		if (!MapDisplayArray.IsValidIndex(i))
-		{
-			continue;
-		}
-
 		PlayerPtr = MapDisplayArray[i];
 
 		if (PlayerPtr == nullptr)
@@ -36,7 +31,10 @@ TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 			continue;
 		}
 
-		IconDataArray.Add(IMinimapIconable::Execute_GetIconDisplayData(PlayerPtr.Get()));
+		if (TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
+		{
+			IconDataArray.Add(IMinimapIconable::Execute_GetIconDisplayData(PlayerPtr.Get()));
+		}
 	}
 	return IconDataArray;
 }
@@ -49,11 +47,6 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 
 	for (size_t i = 0; i < MapDisplayArray.Num(); i++)
 	{
-		if (!MapDisplayArray.IsValidIndex(i))
-		{
-			continue;
-		}
-
 		PlayerPtr = MapDisplayArray[i];
 
 		if (PlayerPtr == nullptr)
@@ -61,7 +54,10 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 			continue;
 		}
 
-		IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPosition(PlayerPtr.Get()));
+		if (TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
+		{
+			IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPosition(PlayerPtr.Get()));
+		}
 	}
 	return IconPositionArray;
 }
@@ -81,7 +77,11 @@ FVector UPlayerSubsystem::GetMainPlayerLocation()
 			{
 				continue;
 			}
-			return (IMinimapIconable::Execute_GetObjectPosition(PlayerPtr.Get()));
+
+			if (TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
+			{
+				return (IMinimapIconable::Execute_GetObjectPosition(PlayerPtr.Get()));
+			}
 		}
 	}
 
