@@ -34,12 +34,12 @@ void UHUDMinimap::NativeTick_Implementation(const FGeometry& MyGeometry, float I
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	SetCameraYaw();
-	SetPlayerLocation();
+	UpdateCameraYaw();
+	UpdatePlayerLocation();
 	DisplayIcons();
 }
 
-void UHUDMinimap::SetCameraYaw()
+void UHUDMinimap::UpdateCameraYaw()
 {
 	if (!CameraManager)
 	{
@@ -49,7 +49,7 @@ void UHUDMinimap::SetCameraYaw()
 	CameraYaw = CameraManager->GetCameraRotation().Yaw;
 }
 
-void UHUDMinimap::SetPlayerLocation()
+void UHUDMinimap::UpdatePlayerLocation()
 {
 	if (!PlayerSubsystem)
 	{
@@ -85,12 +85,7 @@ void UHUDMinimap::DisplayIcons()
 		}
 	}
 
-	IconCanvasPanel->SetRenderTransformAngle(-(CameraYaw-RightAngleDegrees));
-
-	/*for (size_t i = 0; i < IconCanvasPanel->GetChildrenCount(); i++)
-	{
-		HideInvalidIcon(IconCanvasPanel->GetChildAt(i));
-	}*/
+	IconCanvasPanel->SetRenderTransformAngle(-(CameraYaw - RightAngleDegrees));
 }
 
 UWidget* UHUDMinimap::CreateIcon()
@@ -151,31 +146,6 @@ void UHUDMinimap::UpdateIcon(UWidget* IconIdget, const FVector Location)
 	}
 
 	CanvasSlot->SetPosition(FVector2D((MainPlayerLocation - Location) * IconLocationMultiplier));
-	IconIdget->SetRenderTransformAngle(-((1-CameraYaw)+RightAngleDegrees));
+	IconIdget->SetRenderTransformAngle(-((1 - CameraYaw) + RightAngleDegrees));
 	IconIdget->SetVisibility(ESlateVisibility::Visible);
 }
-
-//void UHUDMinimap::HideInvalidIcon(UWidget* Icon)
-//{
-//	if (!Icon)
-//	{
-//		return;
-//	}
-//
-//	const UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(Icon->Slot);
-//
-//	if (!CanvasSlot)
-//	{
-//		return;
-//	}
-//
-//	const FVector2D IconPosition = CanvasSlot->GetPosition();
-//
-//	const float X = IconPosition.X;
-//	const float Y = IconPosition.Y;
-//
-//	if (X >= MinimapIconCutoffWidth || X <= -MinimapIconCutoffWidth || Y >= MinimapIconCutoffWidth || Y <= -MinimapIconCutoffWidth)
-//	{
-//		Icon->SetVisibility(ESlateVisibility::Collapsed);
-//	}
-//}

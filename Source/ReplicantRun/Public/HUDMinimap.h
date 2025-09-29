@@ -10,7 +10,7 @@ class UPlayerSubsystem;
 class UMinimapIcon;
 
 /**
- * 
+ * Used to create and update the icons on the minimap
  */
 UCLASS()
 class REPLICANTRUN_API UHUDMinimap : public UUserWidget
@@ -41,10 +41,10 @@ protected:
 	FVector MainPlayerLocation;
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void SetCameraYaw();
+	void UpdateCameraYaw();
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void SetPlayerLocation();
+	void UpdatePlayerLocation();
 
 	// Constant
 	const int32 RightAngleDegrees = 90;
@@ -86,7 +86,4 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void UpdateIcon(UWidget* IconIdget, const FVector Location);
-
-	/*UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void HideInvalidIcon(UWidget* Icon);*/
 };
