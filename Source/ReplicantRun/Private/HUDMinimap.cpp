@@ -56,7 +56,7 @@ void UHUDMinimap::SetPlayerLocation()
 		return;
 	}
 
-	MainPlayerLocation = PlayerSubsystem->GetMainPlayerLocation();
+	PlayerSubsystem->TryGetMainPlayerLocation(MainPlayerLocation);
 }
 
 void UHUDMinimap::DisplayIcons()
@@ -95,7 +95,7 @@ void UHUDMinimap::DisplayIcons()
 
 UWidget* UHUDMinimap::CreateIcon()
 {
-	if (!MinimapIconClass)
+	if (!ensure(MinimapIconClass))
 	{
 		return nullptr;
 	}
