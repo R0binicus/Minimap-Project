@@ -1,19 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "MinimapDataCollector.h"
 #include "Kismet/GameplayStatics.h" 
 #include "Materials/MaterialParameterCollection.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
 #include "GameFramework/Character.h"
 
-// Sets default values
 AMinimapDataCollector::AMinimapDataCollector()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
 void AMinimapDataCollector::BeginPlay()
 {
 	Super::BeginPlay();
@@ -21,7 +17,6 @@ void AMinimapDataCollector::BeginPlay()
 	SetMinimapInitialValues();
 }
 
-// Called every frame
 void AMinimapDataCollector::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -58,7 +53,7 @@ void AMinimapDataCollector::UpdateMinimapParamValues()
 
 void AMinimapDataCollector::SetMinimapRotation()
 {
-	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	const TObjectPtr<APlayerCameraManager> CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	if (CameraManager == nullptr) return;
 
 	// Rotation value needs to be a fraction of 360 degrees
@@ -69,14 +64,14 @@ void AMinimapDataCollector::SetMinimapRotation()
 
 void AMinimapDataCollector::SetPlayerBasedValues()
 {
-	const ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	const TObjectPtr<ACharacter> PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (PlayerCharacter == nullptr) return;
 
 	SetMinimapCentre(PlayerCharacter);
 	SetPlayerIndicatorRotation(PlayerCharacter);
 }
 
-void AMinimapDataCollector::SetMinimapCentre(const ACharacter* PlayerCharacter)
+void AMinimapDataCollector::SetMinimapCentre(const TObjectPtr<ACharacter> PlayerCharacter)
 {
 	const FVector PlayerLocation = PlayerCharacter->GetActorLocation();
 
@@ -91,12 +86,12 @@ void AMinimapDataCollector::SetMinimapCentre(const ACharacter* PlayerCharacter)
 	MaterialParamInstance->SetScalarParameterValue(FName("PlayerYPos"), ScaledYAxisCoordinate);
 }
 
-void AMinimapDataCollector::SetPlayerIndicatorRotation(const ACharacter* PlayerCharacter)
+void AMinimapDataCollector::SetPlayerIndicatorRotation(const TObjectPtr<ACharacter> PlayerCharacter)
 {
 	// Calculate rotation fraction needed for the minimap's player indicator
 	// Based on the minimap's rotation and the player character rotation
 	float PlayerRotation = PlayerCharacter->GetActorRotation().Yaw / -DegreesInCircle;
-	PlayerRotation = (-MinimapRotation - PlayerRotation) * -1;
+	PlayerRotation = MinimapRotation + PlayerRotation;
 
 	MaterialParamInstance->SetScalarParameterValue(FName("PlayerRotation"), PlayerRotation);
 }
