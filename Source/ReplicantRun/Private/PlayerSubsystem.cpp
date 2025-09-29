@@ -26,14 +26,9 @@ TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 	{
 		PlayerPtr = MapDisplayArray[i];
 
-		if (PlayerPtr == nullptr)
-		{
-			continue;
-		}
-
 		if (TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
 		{
-			IconDataArray.Add(IMinimapIconable::Execute_GetIconDisplayData(PlayerPtr.Get()));
+			IconDataArray.Add(IMinimapIconable::Execute_GetIconDisplayData(LockedObserver.Get()));
 		}
 	}
 	return IconDataArray;
@@ -49,20 +44,15 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 	{
 		PlayerPtr = MapDisplayArray[i];
 
-		if (PlayerPtr == nullptr)
-		{
-			continue;
-		}
-
 		if (TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
 		{
-			IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPosition(PlayerPtr.Get()));
+			IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPosition(LockedObserver.Get()));
 		}
 	}
 	return IconPositionArray;
 }
 
-FVector UPlayerSubsystem::GetMainPlayerLocation()
+bool UPlayerSubsystem::TryGetMainPlayerLocation(FVector& Location)
 {
 	TWeakObjectPtr<UObject> PlayerPtr;
 
@@ -80,12 +70,13 @@ FVector UPlayerSubsystem::GetMainPlayerLocation()
 
 			if (TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
 			{
-				return (IMinimapIconable::Execute_GetObjectPosition(PlayerPtr.Get()));
+				Location = IMinimapIconable::Execute_GetObjectPosition(LockedObserver.Get());
+				return true;
 			}
 		}
 	}
-
-	return FVector();
+	Location = FVector::ZeroVector;
+	return false;
 }
 
 void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>& Array, const TScriptInterface<IMinimapIconable> PlayerInterface)
