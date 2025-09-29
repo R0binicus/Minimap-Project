@@ -40,6 +40,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons")
 	FVector MainPlayerLocation;
 
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void SetCameraYaw();
+
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void SetPlayerLocation();
+
 	// Constant
 	const int32 RightAngleDegrees = 90;
 
@@ -65,17 +71,21 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons", meta = (BindWidget))
 	TObjectPtr<UImage> MinimapImage;
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void SetCameraYaw();
+	// Icon Object Pooling
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")
+	int DefaultIconNum = 6;
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void SetPlayerLocation();
+	UPROPERTY()
+	TArray<TWeakObjectPtr<UWidget>> IconPool;
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void DisplayIcons();
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	const UCanvasPanelSlot* CreateIcon(const FVector Location);
+	UWidget* CreateIcon();
+
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void UpdateIcon(UWidget* IconIdget, const FVector Location);
 
 	/*UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void HideInvalidIcon(UWidget* Icon);*/
