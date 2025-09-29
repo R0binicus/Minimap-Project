@@ -46,7 +46,7 @@ void UHUDMinimap::SetPlayerLocation()
 		return;
 	}
 
-	MainPlayerLocation = PlayerSubsystem->GetMainPlayerLocation();
+	PlayerSubsystem->TryGetMainPlayerLocation(MainPlayerLocation);
 }
 
 void UHUDMinimap::DisplayIcons()
@@ -79,7 +79,7 @@ void UHUDMinimap::DisplayIcons()
 
 const UCanvasPanelSlot* UHUDMinimap::CreateIcon(const FVector Location)
 {
-	if (!MinimapIconClass)
+	if (!ensure(MinimapIconClass))
 	{
 		return nullptr;
 	}
