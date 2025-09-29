@@ -18,8 +18,6 @@ class REPLICANTRUN_API UHUDMinimap : public UUserWidget
 	GENERATED_BODY()
 
 protected:
-	void NativeOnInitialized() override;
-
 	void NativePreConstruct() override;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Minimap Icons")
@@ -59,6 +57,9 @@ protected:
 
 	// Bind Widget
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons", meta = (BindWidget))
+	TObjectPtr<UCanvasPanel> MainCanvasPanel;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons", meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> IconCanvasPanel;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons", meta = (BindWidget))
@@ -74,8 +75,8 @@ protected:
 	void DisplayIcons();
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void CreateIcon(const FVector Location);
+	const UCanvasPanelSlot* CreateIcon(const FVector Location);
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void CheckIconLocation(UMinimapIcon* Icon, const FVector2D IconPosition);
+	/*UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void HideInvalidIcon(UWidget* Icon);*/
 };
