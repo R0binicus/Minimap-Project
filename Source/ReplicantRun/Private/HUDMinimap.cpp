@@ -85,7 +85,7 @@ void UHUDMinimap::DisplayIcons()
 		}
 	}
 
-	IconCanvasPanel->SetRenderTransformAngle(-(CameraYaw - RightAngleDegrees));
+	IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
 }
 
 UWidget* UHUDMinimap::CreateIcon()
