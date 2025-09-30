@@ -83,7 +83,7 @@ void UHUDMinimap::DisplayIcons()
 	{
 		if (IconLocations.IsValidIndex(i) && IconLocations.Num() == IconData.Num())
 		{
-			UpdateIcon(IconPool[i].Get(), IconLocations[i], IconData[i]);
+			UpdateIcon(IconPool[i], IconLocations[i], IconData[i]);
 		}
 		else
 		{
@@ -94,7 +94,7 @@ void UHUDMinimap::DisplayIcons()
 	IconCanvasPanel->SetRenderTransformAngle(-(CameraYaw - RightAngleDegrees));
 }
 
-UWidget* UHUDMinimap::CreateIcon()
+UMinimapIcon* UHUDMinimap::CreateIcon()
 {
 	if (!ensure(MinimapIconClass))
 	{
@@ -106,7 +106,7 @@ UWidget* UHUDMinimap::CreateIcon()
 		return nullptr;
 	}
 
-	const TObjectPtr<UWidget> NewIconWidget = CreateWidget<UMinimapIcon>(GetWorld(), MinimapIconClass);
+	const TObjectPtr<UMinimapIcon> NewIconWidget = CreateWidget<UMinimapIcon>(GetWorld(), MinimapIconClass);
 
 	if (!NewIconWidget)
 	{
@@ -185,3 +185,11 @@ void UHUDMinimap::UpdateIcon(UWidget* IconWidget, const FVector& Location, const
 		MinimapIcon->SetRenderOpacity(0.f);
 	}
 }
+//bool UHUDMinimap::TryGetDisabledIcon(UMinimapIcon& IconOut)
+//{
+//	for (size_t i = 0; i < length; i++)
+//	{
+//
+//	}
+//	return false;
+//}
