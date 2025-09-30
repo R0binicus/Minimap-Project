@@ -82,10 +82,10 @@ protected:
 
 	// Create Icons
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	UMinimapIcon* CreateIcon();
+	void MakeIcons(int NewIconAmount);
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void CreateIcons(int NewIconAmount);
+	UMinimapIcon* CreateIcon();
 
 	// Update Icons
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")

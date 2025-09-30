@@ -19,7 +19,7 @@ void UHUDMinimap::NativePreConstruct()
 		MainCanvasPanel->SetClipping(EWidgetClipping::ClipToBounds);
 	}
 
-	CreateIcons(DefaultIconNum);
+	MakeIcons(DefaultIconNum);
 }
 
 void UHUDMinimap::NativeTick_Implementation(const FGeometry& MyGeometry, float InDeltaTime)
@@ -49,6 +49,19 @@ void UHUDMinimap::UpdatePlayerLocation()
 	}
 
 	PlayerSubsystem->TryGetMainPlayerLocation(MainPlayerLocation);
+}
+
+void UHUDMinimap::MakeIcons(int NewIconAmount)
+{
+	for (size_t i = 0; i < NewIconAmount; i++)
+	{
+		TObjectPtr<UMinimapIcon> Icon = CreateIcon();
+		if (!Icon)
+		{
+			continue;
+		}
+		IconPool.Add(Icon);
+	}
 }
 
 UMinimapIcon* UHUDMinimap::CreateIcon()
@@ -85,19 +98,6 @@ UMinimapIcon* UHUDMinimap::CreateIcon()
 	return NewIconWidget;
 }
 
-void UHUDMinimap::CreateIcons(int NewIconAmount)
-{
-	for (size_t i = 0; i < NewIconAmount; i++)
-	{
-		TObjectPtr<UMinimapIcon> Icon = CreateIcon();
-		if (!Icon)
-		{
-			continue;
-		}
-		IconPool.Add(Icon);
-	}
-}
-
 void UHUDMinimap::DisplayIcons()
 {
 	if (!PlayerSubsystem)
@@ -123,7 +123,7 @@ void UHUDMinimap::DisplayIcons()
 
 		int32 NewIconsNeeded = IconLocations.Num() - IconPool.Num();
 
-		CreateIcons(NewIconsNeeded);
+		MakeIcons(NewIconsNeeded);
 	}
 
 	for (size_t i = 0; i < IconPool.Num(); i++)
@@ -143,16 +143,6 @@ void UHUDMinimap::DisplayIcons()
 
 void UHUDMinimap::UpdateIcon(UMinimapIcon* MinimapIcon, const FVector& Location, const FIconDisplayData& DisplayData)
 {
-	if (!MinimapIconClass)
-	{
-		return;
-	}
-
-	if (!IconCanvasPanel)
-	{
-		return;
-	}
-
 	if (!MinimapIcon)
 	{
 		return;
