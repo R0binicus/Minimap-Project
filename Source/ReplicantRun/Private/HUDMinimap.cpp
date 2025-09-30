@@ -141,7 +141,7 @@ void UHUDMinimap::CreateIcons(int NewIconAmount)
 	}
 }
 
-void UHUDMinimap::UpdateIcon(UMinimapIcon* IconWidget, const FVector& Location, const FIconDisplayData& DisplayData)
+void UHUDMinimap::UpdateIcon(UMinimapIcon* MinimapIcon, const FVector& Location, const FIconDisplayData& DisplayData)
 {
 	if (!MinimapIconClass)
 	{
@@ -153,25 +153,18 @@ void UHUDMinimap::UpdateIcon(UMinimapIcon* IconWidget, const FVector& Location, 
 		return;
 	}
 
-	if (!IconWidget)
+	if (!MinimapIcon)
 	{
 		return;
 	}
 
-	const TObjectPtr<UCanvasPanelSlot> CanvasSlot = IconWidget->GetCanvasSlot();
+	const TObjectPtr<UCanvasPanelSlot> CanvasSlot = MinimapIcon->GetCanvasSlot();
 
 	if (CanvasSlot)
 	{
 		CanvasSlot->SetPosition(FVector2D((MainPlayerLocation - Location) * IconLocationMultiplier));
-		IconWidget->SetRenderTransformAngle(CameraYaw - RightAngleDegrees);
-		IconWidget->SetVisibility(ESlateVisibility::Visible);
-	}
-
-	const TObjectPtr<UMinimapIcon> MinimapIcon = Cast<UMinimapIcon>(IconWidget);
-
-	if (!MinimapIcon)
-	{
-		return;
+		MinimapIcon->SetRenderTransformAngle(CameraYaw - RightAngleDegrees);
+		MinimapIcon->SetVisibility(ESlateVisibility::Visible);
 	}
 
 	const TObjectPtr<UMaterialInstanceDynamic> IconImage = DisplayData.IconMaterial;
