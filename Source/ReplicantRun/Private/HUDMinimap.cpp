@@ -131,7 +131,7 @@ void UHUDMinimap::CreateIcons(int NewIconAmount)
 {
 	for (size_t i = 0; i < NewIconAmount; i++)
 	{
-		TObjectPtr<UWidget> Icon = CreateIcon();
+		TObjectPtr<UMinimapIcon> Icon = CreateIcon();
 		if (!Icon)
 		{
 			continue;
@@ -185,11 +185,37 @@ void UHUDMinimap::UpdateIcon(UWidget* IconWidget, const FVector& Location, const
 		MinimapIcon->SetRenderOpacity(0.f);
 	}
 }
-//bool UHUDMinimap::TryGetDisabledIcon(UMinimapIcon& IconOut)
-//{
-//	for (size_t i = 0; i < length; i++)
-//	{
-//
-//	}
-//	return false;
-//}
+
+UMinimapIcon* UHUDMinimap::GetDisabledIcon()
+{
+	for (size_t i = 0; i < IconPool.Num(); i++)
+	{
+		if (!IconPool[i])
+		{
+			continue;
+		}
+
+		if (IconPool[i]->GetIconDisabled())
+		{
+			return IconPool[i];
+		}
+	}
+	return nullptr;
+}
+
+bool UHUDMinimap::HasDisabledIcon()
+{
+	for (size_t i = 0; i < IconPool.Num(); i++)
+	{
+		if (!IconPool[i])
+		{
+			continue;
+		}
+
+		if (IconPool[i]->GetIconDisabled())
+		{
+			return true;
+		}
+	}
+	return false;
+}

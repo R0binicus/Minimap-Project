@@ -91,4 +91,10 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void UpdateIcon(UWidget* IconWidget, const FVector& Location, const FIconDisplayData& DisplayData);
+
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	UMinimapIcon* GetDisabledIcon();
+
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	bool HasDisabledIcon();
 };

@@ -14,3 +14,21 @@ void UMinimapIcon::SetIconImage(UMaterialInstanceDynamic* NewImageMat)
 	
 	IconImage->SetBrushFromMaterial(NewImageMat);
 }
+
+bool UMinimapIcon::GetIconDisabled()
+{
+	return bIconDisabled;
+}
+
+void UMinimapIcon::SetIconDisabled(bool bDisabled)
+{
+	bIconDisabled = bDisabled;
+	if (bIconDisabled)
+	{
+
+	}
+	else
+	{
+
+	}
+}

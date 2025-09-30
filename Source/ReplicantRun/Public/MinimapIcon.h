@@ -17,8 +17,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void SetIconImage(UMaterialInstanceDynamic* NewImageMat);
 
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	bool GetIconDisabled();
+
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void SetIconDisabled(bool bDisabled);
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon", meta = (BindWidget))
 	TObjectPtr<UImage> IconImage;
-	
+
+	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon")
+	bool bIconDisabled = true;
 };
