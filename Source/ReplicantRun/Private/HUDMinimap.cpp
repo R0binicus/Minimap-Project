@@ -77,7 +77,7 @@ void UHUDMinimap::DisplayIcons()
 	{
 		if (IconLocations.IsValidIndex(i))
 		{
-			UpdateIcon(IconPool[i].Get(), IconLocations[i]);
+			UpdateIcon(IconPool[i], IconLocations[i]);
 		}
 		else
 		{

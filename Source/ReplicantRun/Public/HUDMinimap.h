@@ -76,7 +76,7 @@ protected:
 	int DefaultIconNum = 6;
 
 	UPROPERTY()
-	TArray<TWeakObjectPtr<UWidget>> IconPool;
+	TArray<TObjectPtr<UWidget>> IconPool;
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void DisplayIcons();
