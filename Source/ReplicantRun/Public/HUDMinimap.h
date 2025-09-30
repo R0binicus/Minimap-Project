@@ -8,6 +8,8 @@
 
 class UPlayerSubsystem;
 class UMinimapIcon;
+struct FIconDisplayData;
+;
 
 /**
  * Used to create and update the icons on the minimap
@@ -85,5 +87,5 @@ protected:
 	UWidget* CreateIcon();
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void UpdateIcon(UWidget* IconIdget, const FVector Location);
+	void UpdateIcon(UWidget* IconWidget, const FVector& Location, const FIconDisplayData& DisplayData);
 };

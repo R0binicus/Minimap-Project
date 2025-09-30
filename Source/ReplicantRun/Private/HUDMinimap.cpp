@@ -72,12 +72,13 @@ void UHUDMinimap::DisplayIcons()
 	}
 
 	TArray<FVector> IconLocations = PlayerSubsystem->GetMapIconLocations();
+	TArray<FIconDisplayData> IconData = PlayerSubsystem->GetMapIconData();
 
 	for (size_t i = 0; i < IconPool.Num(); i++)
 	{
-		if (IconLocations.IsValidIndex(i))
+		if (IconLocations.IsValidIndex(i) && IconLocations.Num() == IconData.Num())
 		{
-			UpdateIcon(IconPool[i].Get(), IconLocations[i]);
+			UpdateIcon(IconPool[i].Get(), IconLocations[i], IconData[i]);
 		}
 		else
 		{
@@ -121,7 +122,7 @@ UWidget* UHUDMinimap::CreateIcon()
 	return NewIconWidget;
 }
 
-void UHUDMinimap::UpdateIcon(UWidget* IconIdget, const FVector Location)
+void UHUDMinimap::UpdateIcon(UWidget* IconWidget, const FVector& Location, const FIconDisplayData& DisplayData)
 {
 	if (!MinimapIconClass)
 	{
@@ -133,19 +134,36 @@ void UHUDMinimap::UpdateIcon(UWidget* IconIdget, const FVector Location)
 		return;
 	}
 
-	if (!IconIdget)
+	if (!IconWidget)
 	{
 		return;
 	}
 
-	const TObjectPtr<UCanvasPanelSlot> CanvasSlot = Cast<UCanvasPanelSlot>(IconIdget->Slot);
+	const TObjectPtr<UCanvasPanelSlot> CanvasSlot = Cast<UCanvasPanelSlot>(IconWidget->Slot);
 
-	if (!CanvasSlot)
+	if (CanvasSlot)
+	{
+		CanvasSlot->SetPosition(FVector2D((MainPlayerLocation - Location) * IconLocationMultiplier));
+		IconWidget->SetRenderTransformAngle(-((1 - CameraYaw) + RightAngleDegrees));
+		IconWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	const TObjectPtr<UMinimapIcon> MinimapIcon = Cast<UMinimapIcon>(IconWidget);
+
+	if (!MinimapIcon)
 	{
 		return;
 	}
 
-	CanvasSlot->SetPosition(FVector2D((MainPlayerLocation - Location) * IconLocationMultiplier));
-	IconIdget->SetRenderTransformAngle(-((1 - CameraYaw) + RightAngleDegrees));
-	IconIdget->SetVisibility(ESlateVisibility::Visible);
+	const TObjectPtr<UTexture2D> IconImage = DisplayData.IconImage;
+
+	if (IconImage)
+	{
+		MinimapIcon->SetIconImage(IconImage);
+		MinimapIcon->SetRenderOpacity(1.f);
+	}
+	else
+	{
+		MinimapIcon->SetRenderOpacity(0.f);
+	}
 }
