@@ -51,49 +51,6 @@ void UHUDMinimap::UpdatePlayerLocation()
 	PlayerSubsystem->TryGetMainPlayerLocation(MainPlayerLocation);
 }
 
-void UHUDMinimap::DisplayIcons()
-{
-	if (!PlayerSubsystem)
-	{
-		return;
-	}
-
-	if (!IconCanvasPanel)
-	{
-		return;
-	}
-
-	TArray<FVector> IconLocations = PlayerSubsystem->GetMapIconLocations();
-	TArray<FIconDisplayData> IconData = PlayerSubsystem->GetMapIconData();
-
-	// Check if extra minimap icons are needed
-	if (IconPool.Num() < IconLocations.Num())
-	{
-		if (IconLocations.Num() != IconData.Num())
-		{
-			return; // Not quite sure if it's necessary to return early
-		}
-
-		int32 NewIconsNeeded = IconLocations.Num() - IconPool.Num();
-
-		CreateIcons(NewIconsNeeded);
-	}
-
-	for (size_t i = 0; i < IconPool.Num(); i++)
-	{
-		if (IconLocations.IsValidIndex(i) && IconLocations.Num() == IconData.Num())
-		{
-			UpdateIcon(IconPool[i], IconLocations[i], IconData[i]);
-		}
-		else
-		{
-			IconPool[i]->SetVisibility(ESlateVisibility::Collapsed);
-		}
-	}
-
-	IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
-}
-
 UMinimapIcon* UHUDMinimap::CreateIcon()
 {
 	if (!ensure(MinimapIconClass))
@@ -139,6 +96,49 @@ void UHUDMinimap::CreateIcons(int NewIconAmount)
 		}
 		IconPool.Add(Icon);
 	}
+}
+
+void UHUDMinimap::DisplayIcons()
+{
+	if (!PlayerSubsystem)
+	{
+		return;
+	}
+
+	if (!IconCanvasPanel)
+	{
+		return;
+	}
+
+	TArray<FVector> IconLocations = PlayerSubsystem->GetMapIconLocations();
+	TArray<FIconDisplayData> IconData = PlayerSubsystem->GetMapIconData();
+
+	// Check if extra minimap icons are needed
+	if (IconPool.Num() < IconLocations.Num())
+	{
+		if (IconLocations.Num() != IconData.Num())
+		{
+			return; // Not quite sure if it's necessary to return early
+		}
+
+		int32 NewIconsNeeded = IconLocations.Num() - IconPool.Num();
+
+		CreateIcons(NewIconsNeeded);
+	}
+
+	for (size_t i = 0; i < IconPool.Num(); i++)
+	{
+		if (IconLocations.IsValidIndex(i) && IconLocations.Num() == IconData.Num())
+		{
+			UpdateIcon(IconPool[i], IconLocations[i], IconData[i]);
+		}
+		else
+		{
+			IconPool[i]->SetVisibility(ESlateVisibility::Collapsed);
+		}
+	}
+
+	IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
 }
 
 void UHUDMinimap::UpdateIcon(UMinimapIcon* MinimapIcon, const FVector& Location, const FIconDisplayData& DisplayData)

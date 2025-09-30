@@ -80,18 +80,21 @@ protected:
 	UPROPERTY()
 	TArray<TObjectPtr<UMinimapIcon>> IconPool;
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void DisplayIcons();
-
+	// Create Icons
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	UMinimapIcon* CreateIcon();
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void CreateIcons(int NewIconAmount);
 
+	// Update Icons
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void DisplayIcons();
+
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void UpdateIcon(UMinimapIcon* MinimapIcon, const FVector& Location, const FIconDisplayData& DisplayData);
 
+	// Disable and reenable icons
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	UMinimapIcon* GetDisabledIcon();
 
