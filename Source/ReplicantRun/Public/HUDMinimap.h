@@ -90,7 +90,7 @@ protected:
 	void CreateIcons(int NewIconAmount);
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void UpdateIcon(UWidget* IconWidget, const FVector& Location, const FIconDisplayData& DisplayData);
+	void UpdateIcon(UMinimapIcon* MinimapIcon, const FVector& Location, const FIconDisplayData& DisplayData);
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	UMinimapIcon* GetDisabledIcon();

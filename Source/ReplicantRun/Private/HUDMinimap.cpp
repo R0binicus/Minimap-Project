@@ -91,7 +91,7 @@ void UHUDMinimap::DisplayIcons()
 		}
 	}
 
-	IconCanvasPanel->SetRenderTransformAngle(-(CameraYaw - RightAngleDegrees));
+	IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
 }
 
 UMinimapIcon* UHUDMinimap::CreateIcon()
@@ -120,6 +120,7 @@ UMinimapIcon* UHUDMinimap::CreateIcon()
 		return nullptr;
 	}
 
+	NewIconWidget->SetCanvasSlot(CanvasSlot);
 	CanvasSlot->SetAlignment(FVector2D(AnchorValue, AnchorValue));
 	CanvasSlot->SetAnchors(FAnchors(AnchorValue));
 	NewIconWidget->SetVisibility(ESlateVisibility::Collapsed);
@@ -140,7 +141,7 @@ void UHUDMinimap::CreateIcons(int NewIconAmount)
 	}
 }
 
-void UHUDMinimap::UpdateIcon(UWidget* IconWidget, const FVector& Location, const FIconDisplayData& DisplayData)
+void UHUDMinimap::UpdateIcon(UMinimapIcon* IconWidget, const FVector& Location, const FIconDisplayData& DisplayData)
 {
 	if (!MinimapIconClass)
 	{
@@ -157,12 +158,12 @@ void UHUDMinimap::UpdateIcon(UWidget* IconWidget, const FVector& Location, const
 		return;
 	}
 
-	const TObjectPtr<UCanvasPanelSlot> CanvasSlot = Cast<UCanvasPanelSlot>(IconWidget->Slot);
+	const TObjectPtr<UCanvasPanelSlot> CanvasSlot = IconWidget->GetCanvasSlot();
 
 	if (CanvasSlot)
 	{
 		CanvasSlot->SetPosition(FVector2D((MainPlayerLocation - Location) * IconLocationMultiplier));
-		IconWidget->SetRenderTransformAngle(-((1 - CameraYaw) + RightAngleDegrees));
+		IconWidget->SetRenderTransformAngle(CameraYaw - RightAngleDegrees);
 		IconWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 

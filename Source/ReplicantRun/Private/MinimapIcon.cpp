@@ -32,3 +32,13 @@ void UMinimapIcon::SetIconDisabled(bool bDisabled)
 
 	}
 }
+
+void UMinimapIcon::SetCanvasSlot(UCanvasPanelSlot* NewCanvasSlot)
+{
+	CanvasSlot = NewCanvasSlot;
+}
+
+UCanvasPanelSlot* UMinimapIcon::GetCanvasSlot()
+{
+	return CanvasSlot;
+}
