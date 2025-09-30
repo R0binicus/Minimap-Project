@@ -1,16 +1,16 @@
 #include "MinimapIcon.h"
 
-void UMinimapIcon::SetIconImage(UTexture2D* NewImage)
+void UMinimapIcon::SetIconImage(UMaterialInstanceDynamic* NewImageMat)
 {
-	if (!NewImage)
+	if (!NewImageMat)
 	{
 		return;
 	}
 
-	if (!IconImage)
+	if (!NewImageMat)
 	{
 		return;
 	}
 	
-	IconImage->SetBrushFromTexture(NewImage);
+	IconImage->SetBrushFromMaterial(NewImageMat);
 }

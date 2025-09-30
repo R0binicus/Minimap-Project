@@ -155,7 +155,7 @@ void UHUDMinimap::UpdateIcon(UWidget* IconWidget, const FVector& Location, const
 		return;
 	}
 
-	const TObjectPtr<UTexture2D> IconImage = DisplayData.IconImage;
+	const TObjectPtr<UMaterialInstanceDynamic> IconImage = DisplayData.IconMaterial;
 
 	if (IconImage)
 	{

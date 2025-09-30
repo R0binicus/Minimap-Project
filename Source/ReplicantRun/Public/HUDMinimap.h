@@ -75,7 +75,7 @@ protected:
 
 	// Icon Object Pooling
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")
-	int DefaultIconNum = 6;
+	int DefaultIconNum = 7;
 
 	UPROPERTY()
 	TArray<TWeakObjectPtr<UWidget>> IconPool;

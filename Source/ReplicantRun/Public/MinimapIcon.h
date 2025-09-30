@@ -15,7 +15,7 @@ class REPLICANTRUN_API UMinimapIcon : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void SetIconImage(UTexture2D* NewImage);
+	void SetIconImage(UMaterialInstanceDynamic* NewImageMat);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon", meta = (BindWidget))
