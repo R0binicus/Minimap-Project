@@ -87,5 +87,8 @@ protected:
 	UWidget* CreateIcon();
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void CreateIcons(int NewIconAmount);
+
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void UpdateIcon(UWidget* IconWidget, const FVector& Location, const FIconDisplayData& DisplayData);
 };

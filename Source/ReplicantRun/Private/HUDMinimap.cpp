@@ -19,15 +19,7 @@ void UHUDMinimap::NativePreConstruct()
 		MainCanvasPanel->SetClipping(EWidgetClipping::ClipToBounds);
 	}
 
-	for (size_t i = 0; i < DefaultIconNum; i++)
-	{
-		TObjectPtr<UWidget> Icon = CreateIcon();
-		if (!Icon)
-		{
-			continue;
-		}
-		IconPool.Add(Icon);
-	}
+	CreateIcons(DefaultIconNum);
 }
 
 void UHUDMinimap::NativeTick_Implementation(const FGeometry& MyGeometry, float InDeltaTime)
@@ -73,6 +65,19 @@ void UHUDMinimap::DisplayIcons()
 
 	TArray<FVector> IconLocations = PlayerSubsystem->GetMapIconLocations();
 	TArray<FIconDisplayData> IconData = PlayerSubsystem->GetMapIconData();
+
+	// Check if extra minimap icons are needed
+	if (IconPool.Num() < IconLocations.Num())
+	{
+		if (IconLocations.Num() != IconData.Num())
+		{
+			return; // Not quite sure if it's necessary to return early
+		}
+
+		int32 NewIconsNeeded = IconLocations.Num() - IconPool.Num();
+
+		CreateIcons(NewIconsNeeded);
+	}
 
 	for (size_t i = 0; i < IconPool.Num(); i++)
 	{
@@ -120,6 +125,19 @@ UWidget* UHUDMinimap::CreateIcon()
 	NewIconWidget->SetVisibility(ESlateVisibility::Collapsed);
 
 	return NewIconWidget;
+}
+
+void UHUDMinimap::CreateIcons(int NewIconAmount)
+{
+	for (size_t i = 0; i < NewIconAmount; i++)
+	{
+		TObjectPtr<UWidget> Icon = CreateIcon();
+		if (!Icon)
+		{
+			continue;
+		}
+		IconPool.Add(Icon);
+	}
 }
 
 void UHUDMinimap::UpdateIcon(UWidget* IconWidget, const FVector& Location, const FIconDisplayData& DisplayData)
