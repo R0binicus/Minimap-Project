@@ -134,9 +134,10 @@ void UHUDMinimap::CreateIcons(int NewIconAmount)
 		TObjectPtr<UWidget> Icon = CreateIcon();
 		if (!Icon)
 		{
-			continue;
+			UE_LOG(LogClass, Warning, TEXT("Icon widget failed to create"));
+			return;
 		}
-		IconPool.Add(Icon);
+		IconPool.Add(MoveTemp(Icon));
 	}
 }
 
