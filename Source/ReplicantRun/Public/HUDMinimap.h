@@ -8,6 +8,8 @@
 
 class UPlayerSubsystem;
 class UMinimapIcon;
+struct FIconDisplayData;
+;
 
 /**
  * Used to create and update the icons on the minimap
@@ -73,7 +75,7 @@ protected:
 
 	// Icon Object Pooling
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")
-	int DefaultIconNum = 6;
+	int DefaultIconNum = 7;
 
 	UPROPERTY()
 	TArray<TObjectPtr<UWidget>> IconPool;
@@ -85,5 +87,8 @@ protected:
 	UWidget* CreateIcon();
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void UpdateIcon(UWidget* IconIdget, const FVector Location);
+	void CreateIcons(int NewIconAmount);
+
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void UpdateIcon(UWidget* IconWidget, const FVector& Location, const FIconDisplayData& DisplayData);
 };
