@@ -10,7 +10,7 @@ class UPlayerSubsystem;
 class UMinimapIcon;
 
 /**
- * 
+ * Used to create and update the icons on the minimap
  */
 UCLASS()
 class REPLICANTRUN_API UHUDMinimap : public UUserWidget
@@ -40,6 +40,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons")
 	FVector MainPlayerLocation;
 
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void UpdateCameraYaw();
+
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void UpdatePlayerLocation();
+
 	// Constant
 	const int32 RightAngleDegrees = 90;
 
@@ -65,18 +71,19 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons", meta = (BindWidget))
 	TObjectPtr<UImage> MinimapImage;
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void SetCameraYaw();
+	// Icon Object Pooling
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")
+	int DefaultIconNum = 6;
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void SetPlayerLocation();
+	UPROPERTY()
+	TArray<TObjectPtr<UWidget>> IconPool;
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void DisplayIcons();
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	const UCanvasPanelSlot* CreateIcon(const FVector Location);
+	UWidget* CreateIcon();
 
-	/*UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void HideInvalidIcon(UWidget* Icon);*/
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	void UpdateIcon(UWidget* IconIdget, const FVector Location);
 };

@@ -37,9 +37,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
 	TArray<FVector> GetMapIconLocations();
 
-	UFUNCTION(BlueprintCallable, meta = (ShortToolTip = "Short tooltip"), Category = "Player Subsystem")
+	UFUNCTION(BlueprintCallable, meta = (ShortToolTip = "Modifies FVector with out reference, returns false and ZeroVector if fails"), Category = "Player Subsystem")
 	bool TryGetMainPlayerLocation(FVector& Location);
 
 private:
-	void RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>& Array, const TScriptInterface<IMinimapIconable> PlayerInterface);
+	void RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>& Array, const TScriptInterface<IMinimapIconable>& PlayerInterface);
 };

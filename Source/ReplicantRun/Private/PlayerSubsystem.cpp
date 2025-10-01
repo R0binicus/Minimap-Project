@@ -79,7 +79,7 @@ bool UPlayerSubsystem::TryGetMainPlayerLocation(FVector& Location)
 	return false;
 }
 
-void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>& Array, const TScriptInterface<IMinimapIconable> PlayerInterface)
+void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>& Array, const TScriptInterface<IMinimapIconable>& PlayerInterface)
 {
 	TObjectPtr<UObject> PlayerObj = PlayerInterface.GetObject();
 
