@@ -9,17 +9,29 @@ void UPlayerSubsystem::AddPlayer(const TScriptInterface<IMinimapIconable>& Playe
 void UPlayerSubsystem::EnableMapDisplay(const TScriptInterface<IMinimapIconable>& PlayerInterface)
 {
 	MapDisplayArray.Add(PlayerInterface.GetObject());
+
+	IconPositionArray.AddUninitialized();
+	IconDataArray.AddUninitialized();
 }
 
 void UPlayerSubsystem::RemovePlayer(const TScriptInterface<IMinimapIconable>& PlayerInterface)
 {
 	RemoveInterfaceFromArray(PlayerRefArray, PlayerInterface);
 	RemoveInterfaceFromArray(MapDisplayArray, PlayerInterface);
+
+	if (IconPositionArray.IsValidIndex(0))
+	{
+		IconPositionArray.RemoveAt(0);
+	}
+
+	if (IconDataArray.IsValidIndex(0))
+	{
+		IconDataArray.RemoveAt(0);
+	}
 }
 
-TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
+const TArray<FIconDisplayData>& UPlayerSubsystem::GetMapIconData()
 {
-	TArray<FIconDisplayData> IconDataArray;
 	TWeakObjectPtr<UObject> PlayerPtr;
 
 	for (size_t i = 0; i < MapDisplayArray.Num(); i++)
@@ -28,16 +40,14 @@ TArray<FIconDisplayData> UPlayerSubsystem::GetMapIconData()
 
 		if (TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
 		{
-			IconDataArray.Add(IMinimapIconable::Execute_GetIconDisplayData(LockedObserver.Get()));
+			IconDataArray[i] = IMinimapIconable::Execute_GetIconDisplayData(LockedObserver.Get());
 		}
 	}
 	return IconDataArray;
 }
 
-TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
+const TArray<FVector>& UPlayerSubsystem::GetMapIconLocations()
 {
-	TArray<FVector> IconPositionArray;
-
 	TWeakObjectPtr<UObject> PlayerPtr;
 
 	for (size_t i = 0; i < MapDisplayArray.Num(); i++)
@@ -46,7 +56,7 @@ TArray<FVector> UPlayerSubsystem::GetMapIconLocations()
 
 		if (TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
 		{
-			IconPositionArray.Add(IMinimapIconable::Execute_GetObjectPosition(LockedObserver.Get()));
+			IconPositionArray[i] = IMinimapIconable::Execute_GetObjectPosition(LockedObserver.Get());
 		}
 	}
 	return IconPositionArray;

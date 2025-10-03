@@ -20,6 +20,12 @@ private:
 
 	UPROPERTY()
 	TArray<TWeakObjectPtr<UObject>> MapDisplayArray;
+
+	UPROPERTY()
+	TArray<FVector> IconPositionArray;
+
+	UPROPERTY()
+	TArray<FIconDisplayData> IconDataArray;
 	
 public:
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
@@ -32,10 +38,10 @@ public:
 	void RemovePlayer(const TScriptInterface<IMinimapIconable>& Player);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	TArray<FIconDisplayData> GetMapIconData();
+	const TArray<FIconDisplayData>& GetMapIconData();
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	TArray<FVector> GetMapIconLocations();
+	const TArray<FVector>& GetMapIconLocations();
 
 	UFUNCTION(BlueprintCallable, meta = (ShortToolTip = "Modifies FVector with out reference, returns false and ZeroVector if fails"), Category = "Player Subsystem")
 	bool TryGetMainPlayerLocation(FVector& Location);
