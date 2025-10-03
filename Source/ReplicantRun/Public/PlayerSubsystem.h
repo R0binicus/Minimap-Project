@@ -34,6 +34,9 @@ public:
 	UFUNCTION()
 	const bool HasDisplayArrayChanged() const { return bDisplayArrayChanged; }
 
+	UFUNCTION()
+	void SetDisplayArrayUnchanged();
+
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
 	void AddPlayer(const TScriptInterface<IMinimapIconable>& Player);
 

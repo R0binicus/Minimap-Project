@@ -12,7 +12,6 @@ void UMinimapIcon::SetIconDisabled(bool bDisabled)
 	if (bIconDisabled)
 	{
 		SetVisibility(ESlateVisibility::Collapsed);
-		IconImage = nullptr;
 		CurrentIconMaterial = nullptr;
 	}
 	else
@@ -21,10 +20,36 @@ void UMinimapIcon::SetIconDisabled(bool bDisabled)
 	}
 }
 
-void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const FIconDisplayData& DisplayData, const float& CameraYaw)
+void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const float& CameraYaw)
 {
-	UpdateIconTransform(MainPlayerPosition, DisplayData.IconPosition, CameraYaw);
-	UpdateIconImage(DisplayData.IconMaterial);
+	//UpdateIconTransform(MainPlayerPosition, DisplayData.IconPosition, CameraYaw);
+	//UpdateIconImage(DisplayData.IconMaterial);
+	if (TStrongObjectPtr<UObject> LockedObserver = IconInterfacePtr.Pin())
+	{
+		const FIconDisplayData& DisplayData = IMinimapIconable::Execute_GetIconDisplayData(LockedObserver.Get());
+
+		if (UpdateIconTransform(MainPlayerPosition, DisplayData.IconPosition, CameraYaw)
+			&& UpdateIconImage(DisplayData.IconMaterial))
+		{
+			SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+	else
+	{
+		SetIconDisabled(true);
+	}
+
+	/*if (UpdateIconTransform(MainPlayerPosition, DisplayData.IconPosition, CameraYaw)
+		&& UpdateIconImage(DisplayData.IconMaterial))
+	{
+		SetVisibility(ESlateVisibility::Visible);
+	}*/
+}
+
+void UMinimapIcon::SetInterfacePtr(const TWeakObjectPtr<UObject> InterfacePtr)
+{
+	IconInterfacePtr = InterfacePtr;
+	SetIconDisabled(false);
 }
 
 bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const FVector& IconPosition, const float& CameraYaw)

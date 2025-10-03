@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Image.h"
 #include "Components/CanvasPanelSlot.h"
+#include "MinimapIconable.h"
 #include "MinimapIcon.generated.h"
 
 /**
@@ -25,7 +26,9 @@ public:
 	void SetIconDisabled(bool bDisabled);
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	void UpdateIcon(const FVector& MainPlayerPosition, const FIconDisplayData& DisplayData, const float& CameraYaw);
+	void UpdateIcon(const FVector& MainPlayerPosition, const float& CameraYaw);
+
+	void SetInterfacePtr(const TWeakObjectPtr<UObject> InterfacePtr);
 
 protected:
 	UPROPERTY()

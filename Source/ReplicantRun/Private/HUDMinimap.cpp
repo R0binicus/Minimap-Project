@@ -93,7 +93,7 @@ UMinimapIcon* UHUDMinimap::CreateIcon()
 	NewIconWidget->SetCanvasSlot(CanvasSlot);
 	CanvasSlot->SetAlignment(FVector2D(AnchorValue, AnchorValue));
 	CanvasSlot->SetAnchors(FAnchors(AnchorValue));
-	NewIconWidget->SetVisibility(ESlateVisibility::Collapsed);
+	NewIconWidget->SetIconDisabled(true);
 
 	return NewIconWidget;
 }
@@ -110,17 +110,19 @@ void UHUDMinimap::UpdateIcons()
 		return;
 	}
 
-	const TArray<FIconDisplayData> IconData = PlayerSubsystem->GetMapIconData();
+	const TArray<TWeakObjectPtr<UObject>>& PlayerIconInterfaces = PlayerSubsystem->GetMapDisplayArray();
 
 	// Check if extra minimap icons are needed
-	if (IconPool.Num() < IconData.Num())
+	if (IconPool.Num() < PlayerIconInterfaces.Num())
 	{
-		const int32 NewIconsNeeded = IconData.Num() - IconPool.Num();
+		const int32 NewIconsNeeded = PlayerIconInterfaces.Num() - IconPool.Num();
 
 		MakeIcons(NewIconsNeeded);
 	}
 
-	for (size_t i = 0; i < IconPool.Num(); i++)
+	const TArray<FIconDisplayData> IconData = PlayerSubsystem->GetMapIconData();
+
+	/*for (size_t i = 0; i < IconPool.Num(); i++)
 	{
 		if (!IconData.IsValidIndex(i) || !IconPool.IsValidIndex(i))
 		{
@@ -134,8 +136,38 @@ void UHUDMinimap::UpdateIcons()
 		}
 
 		MinimapIcon->UpdateIcon(MainPlayerPosition, IconData[i], CameraYaw);
+	}*/
+
+	for (size_t i = 0; i < IconPool.Num(); i++)
+	{
+		TObjectPtr<UMinimapIcon> MinimapIcon = IconPool[i];
+		if (!MinimapIcon)
+		{
+			continue;
+		}
+
+		if (PlayerSubsystem->HasDisplayArrayChanged())
+		{
+			if (PlayerIconInterfaces.IsValidIndex(i))
+			{
+				IconPool[i]->SetInterfacePtr(PlayerIconInterfaces[i]);
+			}
+			else
+			{
+				IconPool[i]->SetIconDisabled(true);
+			}
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("IsIconDisabled: %i"), IconPool[i]->IsIconDisabled()));
+		}
+
+		if (MinimapIcon->IsIconDisabled())
+		{
+			continue;
+		}
+
+		MinimapIcon->UpdateIcon(MainPlayerPosition, CameraYaw);
 	}
 
+	PlayerSubsystem->SetDisplayArrayUnchanged();
 	IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
 }
 

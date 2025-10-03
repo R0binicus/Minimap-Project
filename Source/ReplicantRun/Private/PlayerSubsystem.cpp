@@ -1,6 +1,11 @@
 
 #include "PlayerSubsystem.h"
 
+void UPlayerSubsystem::SetDisplayArrayUnchanged()
+{
+	bDisplayArrayChanged = false;
+}
+
 void UPlayerSubsystem::AddPlayer(const TScriptInterface<IMinimapIconable>& PlayerInterface)
 {
 	PlayerRefArray.Add(PlayerInterface.GetObject());
