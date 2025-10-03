@@ -23,8 +23,17 @@ private:
 
 	UPROPERTY()
 	TArray<FIconDisplayData> IconDataArray;
+
+	UPROPERTY()
+	bool bDisplayArrayChanged;
 	
 public:
+	UFUNCTION()
+	const TArray<TWeakObjectPtr<UObject>>& GetMapDisplayArray() const { return MapDisplayArray; }
+
+	UFUNCTION()
+	const bool HasDisplayArrayChanged() const { return bDisplayArrayChanged; }
+
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
 	void AddPlayer(const TScriptInterface<IMinimapIconable>& Player);
 

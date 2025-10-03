@@ -19,7 +19,7 @@ public:
 	void SetCanvasSlot(UCanvasPanelSlot* NewCanvasSlot);
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	bool GetIconDisabled();
+	bool IsIconDisabled() const { return bIconDisabled; }
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
 	void SetIconDisabled(bool bDisabled);
@@ -28,6 +28,9 @@ public:
 	void UpdateIcon(const FVector& MainPlayerPosition, const FIconDisplayData& DisplayData, const float& CameraYaw);
 
 protected:
+	UPROPERTY()
+	TWeakObjectPtr<UObject> IconInterfacePtr = nullptr;
+
 	// Bind Widget
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon", meta = (BindWidget))
 	TObjectPtr<UImage> IconImage;

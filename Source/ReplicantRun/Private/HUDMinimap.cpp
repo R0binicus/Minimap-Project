@@ -148,7 +148,7 @@ UMinimapIcon* UHUDMinimap::GetDisabledIcon()
 			continue;
 		}
 
-		if (IconPool[i]->GetIconDisabled())
+		if (IconPool[i]->IsIconDisabled())
 		{
 			return IconPool[i];
 		}
@@ -165,7 +165,7 @@ bool UHUDMinimap::HasDisabledIcon()
 			continue;
 		}
 
-		if (IconPool[i]->GetIconDisabled())
+		if (IconPool[i]->IsIconDisabled())
 		{
 			return true;
 		}

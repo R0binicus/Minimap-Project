@@ -6,36 +6,25 @@ void UMinimapIcon::SetCanvasSlot(UCanvasPanelSlot* NewCanvasSlot)
 	CanvasSlot = NewCanvasSlot;
 }
 
-bool UMinimapIcon::GetIconDisabled()
-{
-	return bIconDisabled;
-}
-
 void UMinimapIcon::SetIconDisabled(bool bDisabled)
 {
 	bIconDisabled = bDisabled;
 	if (bIconDisabled)
 	{
-
+		SetVisibility(ESlateVisibility::Collapsed);
+		IconImage = nullptr;
+		CurrentIconMaterial = nullptr;
 	}
 	else
 	{
-
+		SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
 void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const FIconDisplayData& DisplayData, const float& CameraYaw)
 {
-	// Try to update icon, if it fails hide the icon
-	if (UpdateIconTransform(MainPlayerPosition, DisplayData.IconPosition, CameraYaw) 
-		&& UpdateIconImage(DisplayData.IconMaterial))
-	{
-		SetVisibility(ESlateVisibility::Visible);
-	}
-	else
-	{
-		SetVisibility(ESlateVisibility::Collapsed);
-	}
+	UpdateIconTransform(MainPlayerPosition, DisplayData.IconPosition, CameraYaw);
+	UpdateIconImage(DisplayData.IconMaterial);
 }
 
 bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const FVector& IconPosition, const float& CameraYaw)
