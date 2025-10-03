@@ -16,7 +16,7 @@ class REPLICANTRUN_API UMinimapIcon : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	void SetIconImage(UMaterialInstanceDynamic* NewImageMat);
+	void SetCanvasSlot(UCanvasPanelSlot* NewCanvasSlot);
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
 	bool GetIconDisabled();
@@ -25,12 +25,10 @@ public:
 	void SetIconDisabled(bool bDisabled);
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	void SetCanvasSlot(UCanvasPanelSlot* NewCanvasSlot);
-
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
 	void UpdateIcon(const FVector& MainPlayerPosition, const FIconDisplayData& DisplayData, const float& CameraYaw);
 
 protected:
+	// Bind Widget
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon", meta = (BindWidget))
 	TObjectPtr<UImage> IconImage;
 
@@ -52,5 +50,5 @@ protected:
 	bool UpdateIconTransform(const FVector& MainPlayerPosition, const FVector& IconPosition, const float& CameraYaw);
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	bool UpdateDisplayImage(UMaterialInstanceDynamic* IconMaterial);
+	bool UpdateIconImage(UMaterialInstanceDynamic* IconMaterial);
 };

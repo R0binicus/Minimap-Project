@@ -1,6 +1,11 @@
 #include "MinimapIcon.h"
 #include "IconDisplayData.h"
 
+void UMinimapIcon::SetCanvasSlot(UCanvasPanelSlot* NewCanvasSlot)
+{
+	CanvasSlot = NewCanvasSlot;
+}
+
 bool UMinimapIcon::GetIconDisabled()
 {
 	return bIconDisabled;
@@ -19,16 +24,11 @@ void UMinimapIcon::SetIconDisabled(bool bDisabled)
 	}
 }
 
-void UMinimapIcon::SetCanvasSlot(UCanvasPanelSlot* NewCanvasSlot)
-{
-	CanvasSlot = NewCanvasSlot;
-}
-
 void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const FIconDisplayData& DisplayData, const float& CameraYaw)
 {
 	// Try to update icon, if it fails hide the icon
 	if (UpdateIconTransform(MainPlayerPosition, DisplayData.IconPosition, CameraYaw) 
-		&& UpdateDisplayImage(DisplayData.IconMaterial))
+		&& UpdateIconImage(DisplayData.IconMaterial))
 	{
 		SetVisibility(ESlateVisibility::Visible);
 	}
@@ -51,7 +51,7 @@ bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const 
 	return true;
 }
 
-bool UMinimapIcon::UpdateDisplayImage(UMaterialInstanceDynamic* IconMaterial)
+bool UMinimapIcon::UpdateIconImage(UMaterialInstanceDynamic* IconMaterial)
 {
 	if (!IconMaterial)
 	{
