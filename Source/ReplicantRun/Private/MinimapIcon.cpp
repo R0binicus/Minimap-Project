@@ -38,12 +38,6 @@ void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const float& Ca
 	{
 		SetIconDisabled(true);
 	}
-
-	/*if (UpdateIconTransform(MainPlayerPosition, DisplayData.IconPosition, CameraYaw)
-		&& UpdateIconImage(DisplayData.IconMaterial))
-	{
-		SetVisibility(ESlateVisibility::Visible);
-	}*/
 }
 
 void UMinimapIcon::SetInterfacePtr(const TWeakObjectPtr<UObject> InterfacePtr)

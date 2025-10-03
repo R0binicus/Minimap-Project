@@ -87,11 +87,4 @@ protected:
 	// Update Icons
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void UpdateIcons();
-
-	// Disable and reenable icons
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	UMinimapIcon* GetDisabledIcon();
-
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	bool HasDisabledIcon();
 };

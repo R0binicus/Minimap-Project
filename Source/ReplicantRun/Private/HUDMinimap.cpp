@@ -116,27 +116,8 @@ void UHUDMinimap::UpdateIcons()
 	if (IconPool.Num() < PlayerIconInterfaces.Num())
 	{
 		const int32 NewIconsNeeded = PlayerIconInterfaces.Num() - IconPool.Num();
-
 		MakeIcons(NewIconsNeeded);
 	}
-
-	const TArray<FIconDisplayData> IconData = PlayerSubsystem->GetMapIconData();
-
-	/*for (size_t i = 0; i < IconPool.Num(); i++)
-	{
-		if (!IconData.IsValidIndex(i) || !IconPool.IsValidIndex(i))
-		{
-			break;
-		}
-
-		TObjectPtr<UMinimapIcon> MinimapIcon = IconPool[i];
-		if (!MinimapIcon)
-		{
-			continue;
-		}
-
-		MinimapIcon->UpdateIcon(MainPlayerPosition, IconData[i], CameraYaw);
-	}*/
 
 	for (size_t i = 0; i < IconPool.Num(); i++)
 	{
@@ -146,6 +127,8 @@ void UHUDMinimap::UpdateIcons()
 			continue;
 		}
 
+		// If the player icons have changed, update the icon's 
+		// MinimapIconable weak pointers
 		if (PlayerSubsystem->HasDisplayArrayChanged())
 		{
 			if (PlayerIconInterfaces.IsValidIndex(i))
@@ -156,51 +139,14 @@ void UHUDMinimap::UpdateIcons()
 			{
 				IconPool[i]->SetIconDisabled(true);
 			}
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("IsIconDisabled: %i"), IconPool[i]->IsIconDisabled()));
 		}
 
-		if (MinimapIcon->IsIconDisabled())
+		if (!MinimapIcon->IsIconDisabled())
 		{
-			continue;
+			MinimapIcon->UpdateIcon(MainPlayerPosition, CameraYaw);
 		}
-
-		MinimapIcon->UpdateIcon(MainPlayerPosition, CameraYaw);
 	}
 
 	PlayerSubsystem->SetDisplayArrayUnchanged();
 	IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
-}
-
-UMinimapIcon* UHUDMinimap::GetDisabledIcon()
-{
-	for (size_t i = 0; i < IconPool.Num(); i++)
-	{
-		if (!IconPool[i])
-		{
-			continue;
-		}
-
-		if (IconPool[i]->IsIconDisabled())
-		{
-			return IconPool[i];
-		}
-	}
-	return nullptr;
-}
-
-bool UHUDMinimap::HasDisabledIcon()
-{
-	for (size_t i = 0; i < IconPool.Num(); i++)
-	{
-		if (!IconPool[i])
-		{
-			continue;
-		}
-
-		if (IconPool[i]->IsIconDisabled())
-		{
-			return true;
-		}
-	}
-	return false;
 }

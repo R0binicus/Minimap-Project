@@ -31,22 +31,6 @@ void UPlayerSubsystem::RemovePlayer(const TScriptInterface<IMinimapIconable>& Pl
 	}
 }
 
-const TArray<FIconDisplayData>& UPlayerSubsystem::GetMapIconData()
-{
-	TWeakObjectPtr<UObject> PlayerPtr;
-
-	for (size_t i = 0; i < MapDisplayArray.Num(); i++)
-	{
-		PlayerPtr = MapDisplayArray[i];
-
-		if (TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
-		{
-			IconDataArray[i] = IMinimapIconable::Execute_GetIconDisplayData(LockedObserver.Get());
-		}
-	}
-	return IconDataArray;
-}
-
 bool UPlayerSubsystem::TryGetMainPlayerLocation(FVector& Location)
 {
 	TWeakObjectPtr<UObject> PlayerPtr;

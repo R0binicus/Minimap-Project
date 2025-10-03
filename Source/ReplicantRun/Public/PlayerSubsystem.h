@@ -46,9 +46,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
 	void RemovePlayer(const TScriptInterface<IMinimapIconable>& Player);
 
-	UFUNCTION(BlueprintCallable, Category = "Player Subsystem")
-	const TArray<FIconDisplayData>& GetMapIconData();
-
 	UFUNCTION(BlueprintCallable, meta = (ShortToolTip = "Modifies FVector with out reference, returns false and ZeroVector if fails"), Category = "Player Subsystem")
 	bool TryGetMainPlayerLocation(FVector& Location);
 
