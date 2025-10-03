@@ -1,21 +1,6 @@
 #include "MinimapIcon.h"
 #include "IconDisplayData.h"
 
-void UMinimapIcon::SetIconImage(UMaterialInstanceDynamic* NewImageMat)
-{
-	if (!NewImageMat)
-	{
-		return;
-	}
-
-	if (!IconImage)
-	{
-		return;
-	}
-	
-	IconImage->SetBrushFromMaterial(NewImageMat);
-}
-
 bool UMinimapIcon::GetIconDisabled()
 {
 	return bIconDisabled;
@@ -53,11 +38,6 @@ void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const FIconDisp
 	}
 }
 
-UCanvasPanelSlot* UMinimapIcon::GetCanvasSlot()
-{
-	return CanvasSlot;
-}
-
 bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const FVector& IconPosition, const float& CameraYaw)
 {
 	if (!CanvasSlot)
@@ -78,7 +58,16 @@ bool UMinimapIcon::UpdateDisplayImage(UMaterialInstanceDynamic* IconMaterial)
 		return false;
 	}
 
-	SetIconImage(IconMaterial);
+	if (!IconImage)
+	{
+		return false;
+	}
+
+	if (IconMaterial != CurrentIconMaterial)
+	{
+		IconImage->SetBrushFromMaterial(IconMaterial);
+		CurrentIconMaterial = IconMaterial;
+	}
 
 	return true;
 }

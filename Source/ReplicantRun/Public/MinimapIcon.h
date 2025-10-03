@@ -7,7 +7,7 @@
 #include "MinimapIcon.generated.h"
 
 /**
- * 
+ * Widget class, which gets displayed on the minimap as an icon
  */
 UCLASS()
 class REPLICANTRUN_API UMinimapIcon : public UUserWidget
@@ -30,9 +30,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
 	void UpdateIcon(const FVector& MainPlayerPosition, const FIconDisplayData& DisplayData, const float& CameraYaw);
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	UCanvasPanelSlot* GetCanvasSlot();
-
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon", meta = (BindWidget))
 	TObjectPtr<UImage> IconImage;
@@ -47,6 +44,9 @@ protected:
 	float IconLocationMultiplier = 0.1f;
 
 	const int32 RightAngleDegrees = 90;
+
+	// Update
+	TObjectPtr<UMaterialInstanceDynamic> CurrentIconMaterial = nullptr;
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
 	bool UpdateIconTransform(const FVector& MainPlayerPosition, const FVector& IconPosition, const float& CameraYaw);
