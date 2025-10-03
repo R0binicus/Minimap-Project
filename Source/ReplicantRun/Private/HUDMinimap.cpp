@@ -28,7 +28,7 @@ void UHUDMinimap::NativeTick_Implementation(const FGeometry& MyGeometry, float I
 
 	UpdateCameraYaw();
 	UpdatePlayerLocation();
-	DisplayIcons();
+	UpdateIcons();
 }
 
 void UHUDMinimap::UpdateCameraYaw()
@@ -48,7 +48,7 @@ void UHUDMinimap::UpdatePlayerLocation()
 		return;
 	}
 
-	PlayerSubsystem->TryGetMainPlayerLocation(MainPlayerLocation);
+	PlayerSubsystem->TryGetMainPlayerLocation(MainPlayerPosition);
 }
 
 void UHUDMinimap::MakeIcons(int NewIconAmount)
@@ -58,7 +58,7 @@ void UHUDMinimap::MakeIcons(int NewIconAmount)
 		const TObjectPtr<UMinimapIcon> Icon = CreateIcon();
 		if (!Icon)
 		{
-			continue;
+			return;
 		}
 		IconPool.Add(Icon);
 	}
@@ -98,7 +98,7 @@ UMinimapIcon* UHUDMinimap::CreateIcon()
 	return NewIconWidget;
 }
 
-void UHUDMinimap::DisplayIcons()
+void UHUDMinimap::UpdateIcons()
 {
 	if (!PlayerSubsystem)
 	{
@@ -122,46 +122,21 @@ void UHUDMinimap::DisplayIcons()
 
 	for (size_t i = 0; i < IconPool.Num(); i++)
 	{
-		if (IconData.IsValidIndex(i) && IconData.Num() == IconData.Num())
+		if (!IconData.IsValidIndex(i) || !IconPool.IsValidIndex(i))
 		{
-			UpdateIcon(IconPool[i], IconData[i].IconPosition, IconData[i]);
+			break;
 		}
-		else
+
+		TObjectPtr<UMinimapIcon> MinimapIcon = IconPool[i];
+		if (!MinimapIcon)
 		{
-			IconPool[i]->SetVisibility(ESlateVisibility::Collapsed);
+			continue;
 		}
+
+		MinimapIcon->UpdateIcon(MainPlayerPosition, IconData[i], CameraYaw);
 	}
 
 	IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
-}
-
-void UHUDMinimap::UpdateIcon(UMinimapIcon* MinimapIcon, const FVector& Location, const FIconDisplayData& DisplayData)
-{
-	if (!MinimapIcon)
-	{
-		return;
-	}
-
-	const TObjectPtr<UCanvasPanelSlot> CanvasSlot = MinimapIcon->GetCanvasSlot();
-
-	if (CanvasSlot)
-	{
-		CanvasSlot->SetPosition(FVector2D((MainPlayerLocation - Location) * IconLocationMultiplier));
-		MinimapIcon->SetRenderTransformAngle(CameraYaw - RightAngleDegrees);
-		MinimapIcon->SetVisibility(ESlateVisibility::Visible);
-	}
-
-	const TObjectPtr<UMaterialInstanceDynamic> IconImage = DisplayData.IconMaterial;
-
-	if (IconImage)
-	{
-		MinimapIcon->SetIconImage(IconImage);
-		MinimapIcon->SetRenderOpacity(1.f);
-	}
-	else
-	{
-		MinimapIcon->SetRenderOpacity(0.f);
-	}
 }
 
 UMinimapIcon* UHUDMinimap::GetDisabledIcon()

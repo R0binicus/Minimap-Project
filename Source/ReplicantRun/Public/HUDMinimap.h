@@ -40,7 +40,7 @@ protected:
 	float CameraYaw;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons")
-	FVector MainPlayerLocation;
+	FVector MainPlayerPosition;
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
 	void UpdateCameraYaw();
@@ -56,9 +56,6 @@ protected:
 	// Modifiable in editor
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")
 	float MinimapIconCutoffWidth = 115.f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")
-	float IconLocationMultiplier = 0.1f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")
 	TSubclassOf<UMinimapIcon> MinimapIconClass = nullptr;
@@ -89,10 +86,7 @@ protected:
 
 	// Update Icons
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void DisplayIcons();
-
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void UpdateIcon(UMinimapIcon* MinimapIcon, const FVector& Location, const FIconDisplayData& DisplayData);
+	void UpdateIcons();
 
 	// Disable and reenable icons
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")

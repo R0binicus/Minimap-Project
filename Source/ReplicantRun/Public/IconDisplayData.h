@@ -9,7 +9,7 @@ struct FIconDisplayData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IconDisplayData")
-	TObjectPtr<UMaterialInstanceDynamic > IconMaterial;
+	TObjectPtr<UMaterialInstanceDynamic> IconMaterial;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IconDisplayData")
 	FVector IconPosition;
