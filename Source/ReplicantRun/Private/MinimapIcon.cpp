@@ -7,7 +7,7 @@ void UMinimapIcon::SetIconImage(UMaterialInstanceDynamic* NewImageMat)
 		return;
 	}
 
-	if (!NewImageMat)
+	if (!IconImage)
 	{
 		return;
 	}

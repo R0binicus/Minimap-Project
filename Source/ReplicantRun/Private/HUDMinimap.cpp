@@ -55,7 +55,7 @@ void UHUDMinimap::MakeIcons(int NewIconAmount)
 {
 	for (size_t i = 0; i < NewIconAmount; i++)
 	{
-		TObjectPtr<UMinimapIcon> Icon = CreateIcon();
+		const TObjectPtr<UMinimapIcon> Icon = CreateIcon();
 		if (!Icon)
 		{
 			continue;
@@ -110,27 +110,21 @@ void UHUDMinimap::DisplayIcons()
 		return;
 	}
 
-	TArray<FVector> IconLocations = PlayerSubsystem->GetMapIconLocations();
-	TArray<FIconDisplayData> IconData = PlayerSubsystem->GetMapIconData();
+	const TArray<FIconDisplayData> IconData = PlayerSubsystem->GetMapIconData();
 
 	// Check if extra minimap icons are needed
-	if (IconPool.Num() < IconLocations.Num())
+	if (IconPool.Num() < IconData.Num())
 	{
-		if (IconLocations.Num() != IconData.Num())
-		{
-			return; // Not quite sure if it's necessary to return early
-		}
-
-		int32 NewIconsNeeded = IconLocations.Num() - IconPool.Num();
+		const int32 NewIconsNeeded = IconData.Num() - IconPool.Num();
 
 		MakeIcons(NewIconsNeeded);
 	}
 
 	for (size_t i = 0; i < IconPool.Num(); i++)
 	{
-		if (IconLocations.IsValidIndex(i) && IconLocations.Num() == IconData.Num())
+		if (IconData.IsValidIndex(i) && IconData.Num() == IconData.Num())
 		{
-			UpdateIcon(IconPool[i], IconLocations[i], IconData[i]);
+			UpdateIcon(IconPool[i], IconData[i].IconPosition, IconData[i]);
 		}
 		else
 		{

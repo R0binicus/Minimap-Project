@@ -10,7 +10,6 @@ void UPlayerSubsystem::EnableMapDisplay(const TScriptInterface<IMinimapIconable>
 {
 	MapDisplayArray.Add(PlayerInterface.GetObject());
 
-	IconPositionArray.AddUninitialized();
 	IconDataArray.AddUninitialized();
 }
 
@@ -18,11 +17,6 @@ void UPlayerSubsystem::RemovePlayer(const TScriptInterface<IMinimapIconable>& Pl
 {
 	RemoveInterfaceFromArray(PlayerRefArray, PlayerInterface);
 	RemoveInterfaceFromArray(MapDisplayArray, PlayerInterface);
-
-	if (IconPositionArray.IsValidIndex(0))
-	{
-		IconPositionArray.RemoveAt(0);
-	}
 
 	if (IconDataArray.IsValidIndex(0))
 	{
@@ -44,22 +38,6 @@ const TArray<FIconDisplayData>& UPlayerSubsystem::GetMapIconData()
 		}
 	}
 	return IconDataArray;
-}
-
-const TArray<FVector>& UPlayerSubsystem::GetMapIconLocations()
-{
-	TWeakObjectPtr<UObject> PlayerPtr;
-
-	for (size_t i = 0; i < MapDisplayArray.Num(); i++)
-	{
-		PlayerPtr = MapDisplayArray[i];
-
-		if (TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
-		{
-			IconPositionArray[i] = IMinimapIconable::Execute_GetObjectPosition(LockedObserver.Get());
-		}
-	}
-	return IconPositionArray;
 }
 
 bool UPlayerSubsystem::TryGetMainPlayerLocation(FVector& Location)
