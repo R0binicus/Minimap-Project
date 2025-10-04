@@ -22,9 +22,6 @@ protected:
 	TArray<TWeakObjectPtr<UObject>> MapDisplayArray;
 
 	UPROPERTY()
-	TArray<FIconDisplayData> IconDataArray;
-
-	UPROPERTY()
 	bool bDisplayArrayChanged;
 
 	const int MaxBotCount = 8;

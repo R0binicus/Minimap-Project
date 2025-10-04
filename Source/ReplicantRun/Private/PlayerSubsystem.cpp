@@ -5,7 +5,6 @@ void UPlayerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	PlayerRefArray.Reserve(GetMaxBots());
 	MapDisplayArray.Reserve(GetMaxBots());
-	IconDataArray.Reserve(GetMaxBots());
 }
 
 void UPlayerSubsystem::SetDisplayArrayUnchanged()
@@ -22,8 +21,6 @@ void UPlayerSubsystem::EnableMapDisplay(const TScriptInterface<IMinimapIconable>
 {
 	MapDisplayArray.Add(PlayerInterface.GetObject());
 	bDisplayArrayChanged = true;
-
-	IconDataArray.AddUninitialized();
 }
 
 void UPlayerSubsystem::RemovePlayer(const TScriptInterface<IMinimapIconable>& PlayerInterface)
@@ -31,11 +28,6 @@ void UPlayerSubsystem::RemovePlayer(const TScriptInterface<IMinimapIconable>& Pl
 	RemoveInterfaceFromArray(PlayerRefArray, PlayerInterface);
 	RemoveInterfaceFromArray(MapDisplayArray, PlayerInterface);
 	bDisplayArrayChanged = true;
-
-	if (IconDataArray.IsValidIndex(0))
-	{
-		IconDataArray.RemoveAt(0);
-	}
 }
 
 bool UPlayerSubsystem::TryGetMainPlayerLocation(FVector& Location)
