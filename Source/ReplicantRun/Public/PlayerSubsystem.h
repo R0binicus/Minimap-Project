@@ -27,8 +27,9 @@ protected:
 	UPROPERTY()
 	bool bDisplayArrayChanged;
 
-	UPROPERTY()
-	int MaxBotCount = 8;
+	const int MaxBotCount = 8;
+
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Player Subsystem")

@@ -1,6 +1,13 @@
 
 #include "PlayerSubsystem.h"
 
+void UPlayerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	PlayerRefArray.Reserve(GetMaxBots());
+	MapDisplayArray.Reserve(GetMaxBots());
+	IconDataArray.Reserve(GetMaxBots());
+}
+
 void UPlayerSubsystem::SetDisplayArrayUnchanged()
 {
 	bDisplayArrayChanged = false;
