@@ -70,10 +70,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons", meta = (BindWidget))
 	TObjectPtr<UImage> MinimapImage;
 
-	// Icon Object Pooling
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")
-	int DefaultIconNum = 7;
-
 	UPROPERTY()
 	TArray<TObjectPtr<UMinimapIcon>> IconPool;
 

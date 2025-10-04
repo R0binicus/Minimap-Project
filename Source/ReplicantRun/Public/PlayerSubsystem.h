@@ -14,7 +14,7 @@ class REPLICANTRUN_API UPlayerSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
 
-private:
+protected:
 	UPROPERTY()
 	TArray<TWeakObjectPtr<UObject>> PlayerRefArray;
 
@@ -26,8 +26,14 @@ private:
 
 	UPROPERTY()
 	bool bDisplayArrayChanged;
+
+	UPROPERTY()
+	int MaxBotCount = 8;
 	
 public:
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Player Subsystem")
+	int GetMaxBots() const { return MaxBotCount; }
+
 	UFUNCTION()
 	const TArray<TWeakObjectPtr<UObject>>& GetMapDisplayArray() const { return MapDisplayArray; }
 

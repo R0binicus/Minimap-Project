@@ -19,7 +19,7 @@ void UHUDMinimap::NativePreConstruct()
 		MainCanvasPanel->SetClipping(EWidgetClipping::ClipToBounds);
 	}
 
-	MakeIcons(DefaultIconNum);
+	MakeIcons(PlayerSubsystem->GetMaxBots());
 }
 
 void UHUDMinimap::NativeTick_Implementation(const FGeometry& MyGeometry, float InDeltaTime)
@@ -53,6 +53,7 @@ void UHUDMinimap::UpdatePlayerLocation()
 
 void UHUDMinimap::MakeIcons(int NewIconAmount)
 {
+	IconPool.Reserve(IconPool.Num() + NewIconAmount);
 	for (size_t i = 0; i < NewIconAmount; i++)
 	{
 		const TObjectPtr<UMinimapIcon> Icon = CreateIcon();
