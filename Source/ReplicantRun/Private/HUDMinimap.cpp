@@ -1,6 +1,5 @@
 #include "HUDMinimap.h"
 #include "Kismet/GameplayStatics.h" 
-#include "Components/CanvasPanelSlot.h" 
 #include "MinimapIcon.h"
 #include "PlayerSubsystem.h"
 
@@ -83,17 +82,7 @@ UMinimapIcon* UHUDMinimap::CreateIcon()
 		return nullptr;
 	}
 
-	const TObjectPtr<UCanvasPanelSlot> CanvasSlot = IconCanvasPanel->AddChildToCanvas(NewIconWidget);
-
-	if (!CanvasSlot)
-	{
-		return nullptr;
-	}
-
-	NewIconWidget->SetCanvasSlot(CanvasSlot);
-	CanvasSlot->SetAlignment(FVector2D(AnchorValue, AnchorValue));
-	CanvasSlot->SetAnchors(FAnchors(AnchorValue));
-	NewIconWidget->SetIconDisabled(true);
+	NewIconWidget->InitIcon(IconCanvasPanel->AddChildToCanvas(NewIconWidget));
 
 	return NewIconWidget;
 }
@@ -137,11 +126,11 @@ void UHUDMinimap::UpdateIcons()
 			}
 			else
 			{
-				IconPool[i]->SetIconDisabled(true);
+				IconPool[i]->SetIconEnabled(false);
 			}
 		}
 
-		if (!MinimapIcon->IsIconDisabled())
+		if (MinimapIcon->IsIconEnabled())
 		{
 			MinimapIcon->UpdateIcon(MainPlayerPosition, CameraYaw);
 		}

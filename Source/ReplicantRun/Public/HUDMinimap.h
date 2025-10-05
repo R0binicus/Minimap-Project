@@ -9,7 +9,6 @@
 class UPlayerSubsystem;
 class UMinimapIcon;
 struct FIconDisplayData;
-;
 
 /**
  * Used to create and update the icons on the minimap
@@ -49,10 +48,8 @@ protected:
 		meta = (ToolTip = "Updates the minimap's variable the player's current location"))
 	void UpdatePlayerLocation();
 
-	// Constants
+	// Constant
 	const int32 RightAngleDegrees = 90;
-
-	const float AnchorValue = 0.5f;
 
 	// Modifiable in editor
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")

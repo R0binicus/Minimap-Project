@@ -4,7 +4,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Image.h"
 #include "Components/CanvasPanelSlot.h"
-#include "MinimapIconable.h"
 #include "MinimapIcon.generated.h"
 
 /**
@@ -16,16 +15,27 @@ class REPLICANTRUN_API UMinimapIcon : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
+	// Initialisation
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icon",
+		meta = (ToolTip = "Initialises and sets up the icon for use"))
+	void InitIcon(UCanvasPanelSlot* NewCanvasSlot);
+	
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icon",
+		meta = (ToolTip = "Sets the icons's canvas slot variable"))
 	void SetCanvasSlot(UCanvasPanelSlot* NewCanvasSlot);
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	bool IsIconDisabled() const { return bIconDisabled; }
+	// Enable/disable functions
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icon",
+		meta = (ToolTip = "Checks if the icon is enabled or disabled"))
+	bool IsIconEnabled() const { return bIconEnabled; }
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	void SetIconDisabled(bool bDisabled);
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icon",
+		meta = (ToolTip = "Disabled and hides "))
+	void SetIconEnabled(const bool bEnabled);
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
+	// Update functions
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icon",
+		meta = (ToolTip = "Updates the icon's location, image and "))
 	void UpdateIcon(const FVector& MainPlayerPosition, const float& CameraYaw);
 
 	void SetInterfacePtr(const TWeakObjectPtr<UObject> InterfacePtr);
@@ -39,7 +49,7 @@ protected:
 	TObjectPtr<UImage> IconImage;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon")
-	bool bIconDisabled = true;
+	bool bIconEnabled = true;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon")
 	TObjectPtr<UCanvasPanelSlot> CanvasSlot;
@@ -47,7 +57,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icon")
 	float IconLocationMultiplier = 0.1f;
 
+	// Constants
 	const int32 RightAngleDegrees = 90;
+	
+	const float AnchorValue = 0.5f;
 
 	// Update
 	TObjectPtr<UMaterialInstanceDynamic> CurrentIconMaterial = nullptr;

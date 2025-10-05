@@ -1,30 +1,43 @@
 #include "MinimapIcon.h"
+#include "MinimapIconable.h"
 #include "IconDisplayData.h"
+
+void UMinimapIcon::InitIcon(UCanvasPanelSlot* NewCanvasSlot)
+{
+	if (!NewCanvasSlot)
+	{
+		return;
+	}
+	
+	SetCanvasSlot(NewCanvasSlot);
+	CanvasSlot->SetAlignment(FVector2D(AnchorValue, AnchorValue));
+	CanvasSlot->SetAnchors(FAnchors(AnchorValue));
+	SetIconEnabled(false);
+}
 
 void UMinimapIcon::SetCanvasSlot(UCanvasPanelSlot* NewCanvasSlot)
 {
 	CanvasSlot = NewCanvasSlot;
 }
 
-void UMinimapIcon::SetIconDisabled(bool bDisabled)
+void UMinimapIcon::SetIconEnabled(const bool bEnabled)
 {
-	bIconDisabled = bDisabled;
-	if (bIconDisabled)
+	bIconEnabled = bEnabled;
+	if (bIconEnabled)
 	{
-		SetVisibility(ESlateVisibility::Collapsed);
-		CurrentIconMaterial = nullptr;
+		SetVisibility(ESlateVisibility::Visible);
+		
 	}
 	else
 	{
-		SetVisibility(ESlateVisibility::Visible);
+		SetVisibility(ESlateVisibility::Collapsed);
+		CurrentIconMaterial = nullptr;
 	}
 }
 
 void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const float& CameraYaw)
 {
-	//UpdateIconTransform(MainPlayerPosition, DisplayData.IconPosition, CameraYaw);
-	//UpdateIconImage(DisplayData.IconMaterial);
-	if (TStrongObjectPtr<UObject> LockedObserver = IconInterfacePtr.Pin())
+	if (const TStrongObjectPtr<UObject> LockedObserver = IconInterfacePtr.Pin())
 	{
 		const FIconDisplayData& DisplayData = IMinimapIconable::Execute_GetIconDisplayData(LockedObserver.Get());
 
@@ -36,14 +49,14 @@ void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const float& Ca
 	}
 	else
 	{
-		SetIconDisabled(true);
+		SetIconEnabled(false);
 	}
 }
 
 void UMinimapIcon::SetInterfacePtr(const TWeakObjectPtr<UObject> InterfacePtr)
 {
 	IconInterfacePtr = InterfacePtr;
-	SetIconDisabled(false);
+	SetIconEnabled(true);
 }
 
 bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const FVector& IconPosition, const float& CameraYaw)
