@@ -32,11 +32,9 @@ void UPlayerSubsystem::RemovePlayer(const TScriptInterface<IMinimapIconable>& Pl
 
 bool UPlayerSubsystem::TryGetMainPlayerLocation(FVector& Location)
 {
-	TWeakObjectPtr<UObject> PlayerPtr;
-
 	for (size_t i = 0; i < PlayerRefArray.Num(); i++)
 	{
-		PlayerPtr = PlayerRefArray[i];
+		TWeakObjectPtr<UObject> PlayerPtr = PlayerRefArray[i];
 
 		// Get player NOT contained in MapDisplayArray, which is the main player
 		if (MapDisplayArray.Contains(PlayerPtr))
@@ -49,7 +47,7 @@ bool UPlayerSubsystem::TryGetMainPlayerLocation(FVector& Location)
 			continue;
 		}
 
-		if (TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
+		if (const TStrongObjectPtr<UObject> LockedObserver = PlayerPtr.Pin())
 		{
 			Location = IMinimapIconable::Execute_GetObjectPosition(LockedObserver.Get());
 			return true;
@@ -61,7 +59,7 @@ bool UPlayerSubsystem::TryGetMainPlayerLocation(FVector& Location)
 
 void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>& Array, const TScriptInterface<IMinimapIconable>& PlayerInterface)
 {
-	TObjectPtr<UObject> PlayerObj = PlayerInterface.GetObject();
+	const TObjectPtr<UObject> PlayerObj = PlayerInterface.GetObject();
 
 	if (!PlayerObj)
 	{
