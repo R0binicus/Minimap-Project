@@ -6,10 +6,15 @@
 
 void UHUDMinimap::NativePreConstruct()
 {
-	const TObjectPtr<UWorld> CurrentWorld = GetWorld();
-	if (CurrentWorld)
+	Super::NativePreConstruct();
+	
+	if (const TObjectPtr<UWorld> CurrentWorld = GetWorld())
 	{
 		PlayerSubsystem = CurrentWorld->GetSubsystem<UPlayerSubsystem>();
+		if (PlayerSubsystem)
+		{
+			MakeIcons(PlayerSubsystem->GetMaxBots());
+		}
 
 		CameraManager = UGameplayStatics::GetPlayerCameraManager(CurrentWorld, 0);
 	}
@@ -18,8 +23,6 @@ void UHUDMinimap::NativePreConstruct()
 	{
 		MainCanvasPanel->SetClipping(EWidgetClipping::ClipToBounds);
 	}
-
-	MakeIcons(PlayerSubsystem->GetMaxBots());
 }
 
 void UHUDMinimap::NativeTick_Implementation(const FGeometry& MyGeometry, float InDeltaTime)
@@ -33,25 +36,21 @@ void UHUDMinimap::NativeTick_Implementation(const FGeometry& MyGeometry, float I
 
 void UHUDMinimap::UpdateCameraYaw()
 {
-	if (!CameraManager)
+	if (CameraManager)
 	{
-		return;
+		CameraYaw = CameraManager->GetCameraRotation().Yaw;
 	}
-
-	CameraYaw = CameraManager->GetCameraRotation().Yaw;
 }
 
 void UHUDMinimap::UpdatePlayerLocation()
 {
-	if (!PlayerSubsystem)
+	if (PlayerSubsystem)
 	{
-		return;
+		PlayerSubsystem->TryGetMainPlayerLocation(MainPlayerPosition);
 	}
-
-	PlayerSubsystem->TryGetMainPlayerLocation(MainPlayerPosition);
 }
 
-void UHUDMinimap::MakeIcons(int NewIconAmount)
+void UHUDMinimap::MakeIcons(const int NewIconAmount)
 {
 	IconPool.Reserve(IconPool.Num() + NewIconAmount);
 	for (size_t i = 0; i < NewIconAmount; i++)

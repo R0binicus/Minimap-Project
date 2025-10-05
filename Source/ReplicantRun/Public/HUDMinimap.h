@@ -27,7 +27,6 @@ protected:
 
 	void NativeTick_Implementation(const FGeometry& MyGeometry, float InDeltaTime);
 
-protected:
 	// Set in constructor
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons")
 	TObjectPtr<UPlayerSubsystem> PlayerSubsystem;
@@ -42,21 +41,20 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons")
 	FVector MainPlayerPosition;
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons",
+		meta = (ToolTip = "Updates the minimap's variable of the current camera rotation"))
 	void UpdateCameraYaw();
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons",
+		meta = (ToolTip = "Updates the minimap's variable the player's current location"))
 	void UpdatePlayerLocation();
 
-	// Constant
+	// Constants
 	const int32 RightAngleDegrees = 90;
 
 	const float AnchorValue = 0.5f;
 
 	// Modifiable in editor
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")
-	float MinimapIconCutoffWidth = 115.f;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")
 	TSubclassOf<UMinimapIcon> MinimapIconClass = nullptr;
 
@@ -74,13 +72,16 @@ protected:
 	TArray<TObjectPtr<UMinimapIcon>> IconPool;
 
 	// Create Icons
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
-	void MakeIcons(int NewIconAmount);
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons",
+		meta = (ToolTip = "Makes the specified number of icon widgets"))
+	void MakeIcons(const int NewIconAmount);
 
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons",
+		meta = (ToolTip = "Creates and initialises an icon"))
 	UMinimapIcon* CreateIcon();
 
 	// Update Icons
-	UFUNCTION(BlueprintCallable, Category = "Minimap Icons")
+	UFUNCTION(BlueprintCallable, Category = "Minimap Icons",
+		meta = (ToolTip = "Updates all icons' location and image"))
 	void UpdateIcons();
 };
