@@ -6,20 +6,22 @@
 
 class UMaterialParameterCollection;
 
+/**
+ * Object placed in the level, which collects data for the minimap
+ * then does as much math as possible before passing that info
+ * off to the material for final rendering
+ */
 UCLASS()
 class REPLICANTRUN_API AMinimapDataCollector : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AMinimapDataCollector();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Minimap material references
@@ -28,6 +30,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UMaterialParameterCollectionInstance> MaterialParamInstance;
+
+	UPROPERTY()
+	TObjectPtr<UWorld> WorldPtr;
 
 	const int32 DegreesInCircle = 360;
 
@@ -44,14 +49,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
 	float ScaleOffset = 0.475f;
 
-	// Values for material scale and offset:
-	// 3.0 -1.0,    2.5 -0.75,     2.0 -0.5,     0.4 0.3,    0.35   0.325,    0.3 0.35,    0.25 0.375,    0.2 0.4,    0.15 0.425,    0.1 0.45,    0.05 0.475
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
-	float XPosOffset = 0.9405f; // Originally 1 - 0.0595
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
-	float YPosOffset = 0.f; // Now unused
+	float XPosOffset = 0.9405f;
 
 	// Set Minimap Material Parameter Functions
 	void SetMinimapInitialValues();
@@ -60,9 +59,9 @@ protected:
 
 	void SetPlayerBasedValues();
 
-	void SetMinimapCentre(const TObjectPtr<ACharacter> PlayerCharacter);
+	void SetMinimapCentre(const TObjectPtr<ACharacter>& PlayerCharacter);
 
-	void SetPlayerIndicatorRotation(const TObjectPtr<ACharacter> PlayerCharacter);
+	void SetPlayerIndicatorRotation(const TObjectPtr<ACharacter>& PlayerCharacter);
 
 	void SetMinimapRotation();
 };
