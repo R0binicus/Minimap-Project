@@ -25,7 +25,7 @@ struct FIconDisplayData
 
 	}
 
-	FIconDisplayData(UMaterialInstanceDynamic* InIconMaterial, FVector InIconPosition, float InIconScale, FColor InIconColour) :
+	FIconDisplayData(UMaterialInstanceDynamic* InIconMaterial, const FVector& InIconPosition, const float InIconScale, const FColor InIconColour) :
 		IconMaterial(InIconMaterial), IconPosition(InIconPosition), IconScale(InIconScale), IconColour(InIconColour)
 	{
 
