@@ -50,7 +50,7 @@ protected:
 	float ScaleOffset = 0.475f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
-	float XPosOffset = 0.9405f;
+	float XPosOffset = 1.f;
 
 	// Set Minimap Material Parameter Functions
 	void SetMinimapInitialValues();
