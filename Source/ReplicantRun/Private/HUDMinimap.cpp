@@ -10,17 +10,23 @@ void UHUDMinimap::NativePreConstruct()
 	if (const TObjectPtr<UWorld> CurrentWorld = GetWorld())
 	{
 		PlayerSubsystem = CurrentWorld->GetSubsystem<UPlayerSubsystem>();
-		if (PlayerSubsystem)
-		{
-			MakeIcons(PlayerSubsystem->GetMaxBots());
-		}
-
+		
 		CameraManager = UGameplayStatics::GetPlayerCameraManager(CurrentWorld, 0);
 	}
 
 	if (MainCanvasPanel)
 	{
 		MainCanvasPanel->SetClipping(EWidgetClipping::ClipToBounds);
+	}
+}
+
+void UHUDMinimap::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	if (PlayerSubsystem)
+	{
+		MakeIcons(PlayerSubsystem->GetMaxBots());
 	}
 }
 

@@ -21,6 +21,8 @@ class REPLICANTRUN_API UHUDMinimap : public UUserWidget
 protected:
 	void NativePreConstruct() override;
 
+	void NativeConstruct() override;
+
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Minimap Icons")
 	void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 
