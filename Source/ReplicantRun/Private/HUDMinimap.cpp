@@ -1,16 +1,16 @@
 #include "HUDMinimap.h"
 #include "Kismet/GameplayStatics.h" 
-#include "Components/CanvasPanelSlot.h" 
 #include "MinimapIcon.h"
 #include "PlayerSubsystem.h"
 
 void UHUDMinimap::NativePreConstruct()
 {
-	const TObjectPtr<UWorld> CurrentWorld = GetWorld();
-	if (CurrentWorld)
+	Super::NativePreConstruct();
+	
+	if (const TObjectPtr<UWorld> CurrentWorld = GetWorld())
 	{
 		PlayerSubsystem = CurrentWorld->GetSubsystem<UPlayerSubsystem>();
-
+		
 		CameraManager = UGameplayStatics::GetPlayerCameraManager(CurrentWorld, 0);
 	}
 
@@ -18,8 +18,16 @@ void UHUDMinimap::NativePreConstruct()
 	{
 		MainCanvasPanel->SetClipping(EWidgetClipping::ClipToBounds);
 	}
+}
 
-	CreateIcons(DefaultIconNum);
+void UHUDMinimap::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	if (PlayerSubsystem)
+	{
+		MakeIcons(PlayerSubsystem->GetMaxBots());
+	}
 }
 
 void UHUDMinimap::NativeTick_Implementation(const FGeometry& MyGeometry, float InDeltaTime)
@@ -28,73 +36,40 @@ void UHUDMinimap::NativeTick_Implementation(const FGeometry& MyGeometry, float I
 
 	UpdateCameraYaw();
 	UpdatePlayerLocation();
-	DisplayIcons();
+	UpdateIcons();
 }
 
 void UHUDMinimap::UpdateCameraYaw()
 {
-	if (!CameraManager)
+	if (CameraManager)
 	{
-		return;
+		CameraYaw = CameraManager->GetCameraRotation().Yaw;
 	}
-
-	CameraYaw = CameraManager->GetCameraRotation().Yaw;
 }
 
 void UHUDMinimap::UpdatePlayerLocation()
 {
-	if (!PlayerSubsystem)
+	if (PlayerSubsystem)
 	{
-		return;
+		PlayerSubsystem->TryGetMainPlayerLocation(MainPlayerPosition);
 	}
-
-	PlayerSubsystem->TryGetMainPlayerLocation(MainPlayerLocation);
 }
 
-void UHUDMinimap::DisplayIcons()
+void UHUDMinimap::MakeIcons(const int NewIconAmount)
 {
-	if (!PlayerSubsystem)
+	IconPool.Reserve(IconPool.Num() + NewIconAmount);
+	for (size_t i = 0; i < NewIconAmount; i++)
 	{
-		return;
-	}
-
-	if (!IconCanvasPanel)
-	{
-		return;
-	}
-
-	TArray<FVector> IconLocations = PlayerSubsystem->GetMapIconLocations();
-	TArray<FIconDisplayData> IconData = PlayerSubsystem->GetMapIconData();
-
-	// Check if extra minimap icons are needed
-	if (IconPool.Num() < IconLocations.Num())
-	{
-		if (IconLocations.Num() != IconData.Num())
+		const TObjectPtr<UMinimapIcon> Icon = CreateIcon();
+		if (!Icon)
 		{
-			return; // Not quite sure if it's necessary to return early
+			return;
 		}
-
-		int32 NewIconsNeeded = IconLocations.Num() - IconPool.Num();
-
-		CreateIcons(NewIconsNeeded);
+		IconPool.Add(Icon);
 	}
-
-	for (size_t i = 0; i < IconPool.Num(); i++)
-	{
-		if (IconLocations.IsValidIndex(i) && IconLocations.Num() == IconData.Num())
-		{
-			UpdateIcon(IconPool[i].Get(), IconLocations[i], IconData[i]);
-		}
-		else
-		{
-			IconPool[i]->SetVisibility(ESlateVisibility::Collapsed);
-		}
-	}
-
-	IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
 }
 
-UWidget* UHUDMinimap::CreateIcon()
+UMinimapIcon* UHUDMinimap::CreateIcon()
 {
 	if (!ensure(MinimapIconClass))
 	{
@@ -106,44 +81,21 @@ UWidget* UHUDMinimap::CreateIcon()
 		return nullptr;
 	}
 
-	const TObjectPtr<UWidget> NewIconWidget = CreateWidget<UMinimapIcon>(GetWorld(), MinimapIconClass);
+	const TObjectPtr<UMinimapIcon> NewIconWidget = CreateWidget<UMinimapIcon>(GetWorld(), MinimapIconClass);
 
 	if (!NewIconWidget)
 	{
 		return nullptr;
 	}
 
-	const TObjectPtr<UCanvasPanelSlot> CanvasSlot = IconCanvasPanel->AddChildToCanvas(NewIconWidget);
-
-	if (!CanvasSlot)
-	{
-		return nullptr;
-	}
-
-	CanvasSlot->SetAlignment(FVector2D(AnchorValue, AnchorValue));
-	CanvasSlot->SetAnchors(FAnchors(AnchorValue));
-	NewIconWidget->SetVisibility(ESlateVisibility::Collapsed);
+	NewIconWidget->InitIcon(IconCanvasPanel->AddChildToCanvas(NewIconWidget));
 
 	return NewIconWidget;
 }
 
-void UHUDMinimap::CreateIcons(int NewIconAmount)
+void UHUDMinimap::UpdateIcons()
 {
-	for (size_t i = 0; i < NewIconAmount; i++)
-	{
-		TObjectPtr<UWidget> Icon = CreateIcon();
-		if (!Icon)
-		{
-			UE_LOG(LogClass, Warning, TEXT("Icon widget failed to create"));
-			return;
-		}
-		IconPool.Add(MoveTemp(Icon));
-	}
-}
-
-void UHUDMinimap::UpdateIcon(UWidget* IconWidget, const FVector& Location, const FIconDisplayData& DisplayData)
-{
-	if (!MinimapIconClass)
+	if (!PlayerSubsystem)
 	{
 		return;
 	}
@@ -153,36 +105,43 @@ void UHUDMinimap::UpdateIcon(UWidget* IconWidget, const FVector& Location, const
 		return;
 	}
 
-	if (!IconWidget)
+	const TArray<TWeakObjectPtr<UObject>>& PlayerIconInterfaces = PlayerSubsystem->GetMapDisplayArray();
+
+	// Check if extra minimap icons are needed
+	if (IconPool.Num() < PlayerIconInterfaces.Num())
 	{
-		return;
+		const int32 NewIconsNeeded = PlayerIconInterfaces.Num() - IconPool.Num();
+		MakeIcons(NewIconsNeeded);
 	}
 
-	const TObjectPtr<UCanvasPanelSlot> CanvasSlot = Cast<UCanvasPanelSlot>(IconWidget->Slot);
-
-	if (CanvasSlot)
+	for (size_t i = 0; i < IconPool.Num(); i++)
 	{
-		CanvasSlot->SetPosition(FVector2D((MainPlayerLocation - Location) * IconLocationMultiplier));
-		IconWidget->SetRenderTransformAngle(-((1 - CameraYaw) + RightAngleDegrees));
-		IconWidget->SetVisibility(ESlateVisibility::Visible);
+		TObjectPtr<UMinimapIcon> MinimapIcon = IconPool[i];
+		if (!MinimapIcon)
+		{
+			continue;
+		}
+
+		// If the player icons have changed, update the icon's 
+		// MinimapIconable weak pointers
+		if (PlayerSubsystem->HasDisplayArrayChanged())
+		{
+			if (PlayerIconInterfaces.IsValidIndex(i))
+			{
+				IconPool[i]->SetInterfacePtr(PlayerIconInterfaces[i]);
+			}
+			else
+			{
+				IconPool[i]->SetIconEnabled(false);
+			}
+		}
+
+		if (MinimapIcon->IsIconEnabled())
+		{
+			MinimapIcon->UpdateIcon(MainPlayerPosition, CameraYaw);
+		}
 	}
 
-	const TObjectPtr<UMinimapIcon> MinimapIcon = Cast<UMinimapIcon>(IconWidget);
-
-	if (!MinimapIcon)
-	{
-		return;
-	}
-
-	const TObjectPtr<UMaterialInstanceDynamic> IconImage = DisplayData.IconMaterial;
-
-	if (IconImage)
-	{
-		MinimapIcon->SetIconImage(IconImage);
-		MinimapIcon->SetRenderOpacity(1.f);
-	}
-	else
-	{
-		MinimapIcon->SetRenderOpacity(0.f);
-	}
+	PlayerSubsystem->SetDisplayArrayUnchanged();
+	IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
 }
