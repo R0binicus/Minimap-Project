@@ -32,7 +32,7 @@ protected:
 	TObjectPtr<UMaterialParameterCollectionInstance> MaterialParamInstance;
 
 	UPROPERTY()
-	TObjectPtr<UWorld> WorldPtr;
+	TObjectPtr<UWorld> World;
 
 	const int32 DegreesInCircle = 360;
 

@@ -24,21 +24,14 @@ void AMinimapDataCollector::Tick(float DeltaTime)
 
 void AMinimapDataCollector::SetMinimapInitialValues()
 {
-	WorldPtr = GetWorld();
-	
-	if (WorldPtr == nullptr)
+	World = GetWorld();
+	if (!World || !MaterialParams)
 	{
 		return;
 	}
 	
-	if (MaterialParams == nullptr)
-	{
-		return;
-	}
-	
-	MaterialParamInstance = WorldPtr->GetParameterCollectionInstance(MaterialParams);
-	
-	if (MaterialParamInstance == nullptr) 
+	MaterialParamInstance = World->GetParameterCollectionInstance(MaterialParams);
+	if (!MaterialParamInstance) 
 	{
 		return;
 	}
@@ -56,19 +49,13 @@ void AMinimapDataCollector::UpdateMinimapParamValues()
 
 void AMinimapDataCollector::SetMinimapRotation()
 {
-	if (WorldPtr == nullptr)
-	{
-		return;
-	}
-
-	if (MaterialParamInstance == nullptr)
+	if (!World || !MaterialParamInstance)
 	{
 		return;
 	}
 	
-	const TObjectPtr<APlayerCameraManager> CameraManager = UGameplayStatics::GetPlayerCameraManager(WorldPtr, 0);
-	
-	if (CameraManager == nullptr)
+	const TObjectPtr<APlayerCameraManager> CameraManager = UGameplayStatics::GetPlayerCameraManager(World, 0);
+	if (!CameraManager)
 	{
 		return;
 	}
@@ -81,13 +68,12 @@ void AMinimapDataCollector::SetMinimapRotation()
 
 void AMinimapDataCollector::SetPlayerBasedValues()
 {
-	if (WorldPtr == nullptr)
+	if (World == nullptr)
 	{
 		return;
 	}
 	
-	const TObjectPtr<ACharacter> PlayerCharacter = UGameplayStatics::GetPlayerCharacter(WorldPtr, 0);
-	
+	const TObjectPtr<ACharacter> PlayerCharacter = UGameplayStatics::GetPlayerCharacter(World, 0);
 	if (PlayerCharacter == nullptr)
 	{
 		return;
@@ -101,13 +87,11 @@ void AMinimapDataCollector::SetMinimapCentre(const TObjectPtr<ACharacter>& Playe
 {
 	const FVector PlayerLocation = PlayerCharacter->GetActorLocation();
 
-	// Set scaled X and Y axis coordinates
 	float ScaledXAxisCoordinate = PlayerLocation.X / MinimapDistanceWidth + XPosOffset;
 	ScaledXAxisCoordinate = 1 - ScaledXAxisCoordinate;
 
 	const float ScaledYAxisCoordinate = PlayerLocation.Y / MinimapDistanceWidth;
 
-	// Set material parameter for the player positions
 	MaterialParamInstance->SetScalarParameterValue(FName("PlayerXPos"), ScaledXAxisCoordinate);
 	MaterialParamInstance->SetScalarParameterValue(FName("PlayerYPos"), ScaledYAxisCoordinate);
 }

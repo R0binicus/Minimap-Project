@@ -74,12 +74,7 @@ bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const 
 
 bool UMinimapIcon::UpdateIconImage(UMaterialInstanceDynamic* IconMaterial)
 {
-	if (!IconMaterial)
-	{
-		return false;
-	}
-
-	if (!IconImage)
+	if (!IconMaterial || !IconImage)
 	{
 		return false;
 	}

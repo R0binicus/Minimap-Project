@@ -71,18 +71,12 @@ void UHUDMinimap::MakeIcons(const int NewIconAmount)
 
 UMinimapIcon* UHUDMinimap::CreateIcon()
 {
-	if (!ensure(MinimapIconClass))
-	{
-		return nullptr;
-	}
-
-	if (!IconCanvasPanel)
+	if (!MinimapIconClass || !IconCanvasPanel)
 	{
 		return nullptr;
 	}
 
 	const TObjectPtr<UMinimapIcon> NewIconWidget = CreateWidget<UMinimapIcon>(GetWorld(), MinimapIconClass);
-
 	if (!NewIconWidget)
 	{
 		return nullptr;
@@ -95,12 +89,7 @@ UMinimapIcon* UHUDMinimap::CreateIcon()
 
 void UHUDMinimap::UpdateIcons()
 {
-	if (!PlayerSubsystem)
-	{
-		return;
-	}
-
-	if (!IconCanvasPanel)
+	if (!PlayerSubsystem || !IconCanvasPanel)
 	{
 		return;
 	}

@@ -22,12 +22,10 @@ struct FIconDisplayData
 
 	FIconDisplayData() : IconMaterial(nullptr), IconPosition(FVector::ZeroVector), IconScale(1.f), IconColour(FColor(FColor::White))
 	{
-
 	}
 
 	FIconDisplayData(UMaterialInstanceDynamic* InIconMaterial, const FVector& InIconPosition, const float InIconScale, const FColor InIconColour) :
 		IconMaterial(InIconMaterial), IconPosition(InIconPosition), IconScale(InIconScale), IconColour(InIconColour)
 	{
-
 	}
 };
