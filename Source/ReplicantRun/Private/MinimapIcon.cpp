@@ -2,9 +2,9 @@
 #include "MinimapIconable.h"
 #include "IconDisplayData.h"
 
-void UMinimapIcon::InitIcon(UCanvasPanelSlot* NewCanvasSlot)
+void UMinimapIcon::InitIcon(UCanvasPanelSlot* NewCanvasSlot, UMaterialInterface* IconMaterialBase, UTextureRenderTarget2D* NewIconRenderTarget)
 {
-	if (!IsValid(NewCanvasSlot) || !IsValid(IconImage))
+	if (!IsValid(NewCanvasSlot) || !IsValid(IconImage) || !IsValid(IconMaterialBase))
 	{
 		return;
 	}
@@ -14,6 +14,7 @@ void UMinimapIcon::InitIcon(UCanvasPanelSlot* NewCanvasSlot)
 	CanvasSlot->SetAlignment(FVector2D(AnchorValue, AnchorValue));
 	CanvasSlot->SetAnchors(FAnchors(AnchorValue));
 	IconImage->SetBrushFromMaterial(IconMaterial);
+	IconRenderTarget = NewIconRenderTarget;
 
 	SetIconEnabled(false);
 }

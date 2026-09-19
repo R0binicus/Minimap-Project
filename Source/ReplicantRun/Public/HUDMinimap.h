@@ -8,7 +8,6 @@
 
 class UPlayerSubsystem;
 class UMinimapIcon;
-struct FIconDisplayData;
 
 /**
  * Used to create and update the icons on the minimap
@@ -52,6 +51,13 @@ protected:
 
 	// Constant
 	const int32 RightAngleDegrees = 90;
+
+	// Minimap Values
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap")
+	TObjectPtr<UTextureRenderTarget2D> MinimapIconsRenderTarget;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icon")
+	TObjectPtr<UMaterialInterface> IconMaterialBase;
 
 	// Modifiable in editor
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Minimap Icons")

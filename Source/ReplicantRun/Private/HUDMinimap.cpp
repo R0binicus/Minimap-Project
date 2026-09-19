@@ -82,7 +82,7 @@ UMinimapIcon* UHUDMinimap::CreateIcon()
 		return nullptr;
 	}
 
-	NewIconWidget->InitIcon(IconCanvasPanel->AddChildToCanvas(NewIconWidget));
+	NewIconWidget->InitIcon(IconCanvasPanel->AddChildToCanvas(NewIconWidget), IconMaterialBase, MinimapIconsRenderTarget);
 
 	return NewIconWidget;
 }

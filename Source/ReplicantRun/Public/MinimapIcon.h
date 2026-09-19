@@ -19,7 +19,7 @@ public:
 	// Initialisation
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon",
 		meta = (ToolTip = "Initialises and sets up the icon for use"))
-	void InitIcon(UCanvasPanelSlot* NewCanvasSlot);
+	void InitIcon(UCanvasPanelSlot* NewCanvasSlot, UMaterialInterface* IconMaterialBase, UTextureRenderTarget2D* NewIconRenderTarget);
 	
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon",
 		meta = (ToolTip = "Sets the icons's canvas slot variable"))
@@ -45,8 +45,8 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UObject> IconInterfacePtr = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Minimap Icon")
-	TObjectPtr<UMaterialInterface> IconMaterialBase;
+	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon")
+	TObjectPtr<UTextureRenderTarget2D> IconRenderTarget;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon")
 	TObjectPtr<UMaterialInstanceDynamic> IconMaterial;
