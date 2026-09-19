@@ -4,14 +4,17 @@
 
 void UMinimapIcon::InitIcon(UCanvasPanelSlot* NewCanvasSlot)
 {
-	if (!NewCanvasSlot)
+	if (!IsValid(NewCanvasSlot) || !IsValid(IconImage))
 	{
 		return;
 	}
-	
+
 	SetCanvasSlot(NewCanvasSlot);
+	IconMaterial = UMaterialInstanceDynamic::Create(IconMaterialBase, this);
 	CanvasSlot->SetAlignment(FVector2D(AnchorValue, AnchorValue));
 	CanvasSlot->SetAnchors(FAnchors(AnchorValue));
+	IconImage->SetBrushFromMaterial(IconMaterial);
+
 	SetIconEnabled(false);
 }
 
@@ -26,16 +29,16 @@ void UMinimapIcon::SetIconEnabled(const bool bEnabled)
 	if (bIconEnabled)
 	{
 		SetVisibility(ESlateVisibility::Visible);
-		
+
 	}
 	else
 	{
 		SetVisibility(ESlateVisibility::Collapsed);
-		CurrentIconMaterial = nullptr;
+		DisplayData = FIconDisplayData(); //Clear stored icon data
 	}
 }
 
-void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const float& CameraYaw)
+void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const float CameraYaw)
 {
 	if (const TStrongObjectPtr<UObject> LockedObserver = IconInterfacePtr.Pin())
 	{
@@ -61,40 +64,38 @@ void UMinimapIcon::SetInterfacePtr(const TWeakObjectPtr<UObject> InterfacePtr)
 	SetIconEnabled(true);
 }
 
-bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const FIconDisplayData& NewDisplayData, const float& CameraYaw)
+bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const FIconDisplayData& NewDisplayData, const float CameraYaw)
 {
-	const FVector& IconPosition = NewDisplayData.IconPosition;
-	if (!CanvasSlot)
+	if (!IsValid(IconMaterial) || !IsValid(CanvasSlot))
 	{
 		return false;
 	}
 
-	CanvasSlot->SetPosition(FVector2D((MainPlayerPosition - IconPosition) * IconLocationMultiplier));
-	SetRenderTransformAngle(CameraYaw - RightAngleDegrees);
+	const FVector& NewIconPosition = NewDisplayData.IconPosition;
+	CanvasSlot->SetPosition(FVector2D((MainPlayerPosition - NewIconPosition) * IconLocationMultiplier));
+	IconMaterial->SetScalarParameterValue("Rotation", CameraYaw - RightAngleDegrees);
 
 	return true;
 }
 
 bool UMinimapIcon::UpdateIconImage(const FIconDisplayData& NewDisplayData)
 {
-	UTexture2D* IconTexture = NewDisplayData.IconTexture;
-	if (!IconTexture || !IconImage)
+	if (!IsValid(IconMaterial))
 	{
 		return false;
 	}
 
-	IconMaterial = UMaterialInstanceDynamic::Create(IconMaterialBase, this);
-	if (!IconMaterial)
+	const TObjectPtr<UTexture2D> NewIconTexture = NewDisplayData.IconTexture;
+	const float NewHueShift = NewDisplayData.IconHueShift;
+
+	if (NewIconTexture != DisplayData.IconTexture)
 	{
-		return false;
+		IconMaterial->SetTextureParameterValue("BotIcon", NewIconTexture);
 	}
 
-	if (IconMaterial != CurrentIconMaterial)
+	if (NewHueShift != DisplayData.IconHueShift)
 	{
-		IconMaterial->SetScalarParameterValue("HueShift", NewDisplayData.IconHueShift);
-		IconMaterial->SetTextureParameterValue("BotIcon", IconTexture);
-		IconImage->SetBrushFromMaterial(IconMaterial);
-		CurrentIconMaterial = IconMaterial;
+		IconMaterial->SetScalarParameterValue("HueShift", NewHueShift);
 	}
 
 	return true;

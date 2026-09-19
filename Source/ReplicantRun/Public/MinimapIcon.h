@@ -37,7 +37,7 @@ public:
 	// Update functions
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon",
 		meta = (ToolTip = "Updates the icon's location, image and "))
-	void UpdateIcon(const FVector& MainPlayerPosition, const float& CameraYaw);
+	void UpdateIcon(const FVector& MainPlayerPosition, const float CameraYaw);
 
 	void SetInterfacePtr(const TWeakObjectPtr<UObject> InterfacePtr);
 
@@ -73,10 +73,8 @@ protected:
 	const float AnchorValue = 0.5f;
 
 	// Update
-	TObjectPtr<UMaterialInstanceDynamic> CurrentIconMaterial = nullptr;
-
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	bool UpdateIconTransform(const FVector& MainPlayerPosition, const FIconDisplayData& NewDisplayData, const float& CameraYaw);
+	bool UpdateIconTransform(const FVector& MainPlayerPosition, const FIconDisplayData& NewDisplayData, const float CameraYaw);
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
 	bool UpdateIconImage(const FIconDisplayData& NewDisplayData);
