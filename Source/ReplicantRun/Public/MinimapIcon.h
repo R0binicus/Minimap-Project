@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Image.h"
 #include "Components/CanvasPanelSlot.h"
+#include "IconDisplayData.h"
 #include "MinimapIcon.generated.h"
 
 /**
@@ -44,6 +45,15 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UObject> IconInterfacePtr = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Minimap Icon")
+	TObjectPtr<UMaterialInterface> IconMaterialBase;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon")
+	TObjectPtr<UMaterialInstanceDynamic> IconMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Minimap Icon")
+	FIconDisplayData DisplayData;
+
 	// Bind Widget
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icon", meta = (BindWidget))
 	TObjectPtr<UImage> IconImage;
@@ -66,8 +76,8 @@ protected:
 	TObjectPtr<UMaterialInstanceDynamic> CurrentIconMaterial = nullptr;
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	bool UpdateIconTransform(const FVector& MainPlayerPosition, const FVector& IconPosition, const float& CameraYaw);
+	bool UpdateIconTransform(const FVector& MainPlayerPosition, const FIconDisplayData& NewDisplayData, const float& CameraYaw);
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	bool UpdateIconImage(UMaterialInstanceDynamic* IconMaterial);
+	bool UpdateIconImage(const FIconDisplayData& NewDisplayData);
 };

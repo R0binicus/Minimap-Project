@@ -9,7 +9,7 @@ struct FIconDisplayData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IconDisplayData")
-	TObjectPtr<UMaterialInstanceDynamic> IconMaterial;
+	TObjectPtr<UTexture2D> IconTexture;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IconDisplayData")
 	FVector IconPosition;
@@ -18,14 +18,14 @@ struct FIconDisplayData
 	float IconScale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IconDisplayData")
-	FColor IconColour;
+	float IconHueShift;
 
-	FIconDisplayData() : IconMaterial(nullptr), IconPosition(FVector::ZeroVector), IconScale(1.f), IconColour(FColor(FColor::White))
+	FIconDisplayData() : IconTexture(nullptr), IconPosition(FVector::ZeroVector), IconScale(1.f), IconHueShift(1.f)
 	{
 	}
 
-	FIconDisplayData(UMaterialInstanceDynamic* InIconMaterial, const FVector& InIconPosition, const float InIconScale, const FColor InIconColour) :
-		IconMaterial(InIconMaterial), IconPosition(InIconPosition), IconScale(InIconScale), IconColour(InIconColour)
+	FIconDisplayData(UTexture2D* InIconTexture, const FVector& InIconPosition, const float InIconScale, const float InIconHue) :
+		IconTexture(InIconTexture), IconPosition(InIconPosition), IconScale(InIconScale), IconHueShift(InIconHue)
 	{
 	}
 };

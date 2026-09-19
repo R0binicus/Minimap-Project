@@ -39,13 +39,15 @@ void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const float& Ca
 {
 	if (const TStrongObjectPtr<UObject> LockedObserver = IconInterfacePtr.Pin())
 	{
-		const FIconDisplayData& DisplayData = IMinimapIconable::Execute_GetIconDisplayData(LockedObserver.Get());
+		const FIconDisplayData& NewDisplayData = IMinimapIconable::Execute_GetIconDisplayData(LockedObserver.Get());
 
-		if (UpdateIconTransform(MainPlayerPosition, DisplayData.IconPosition, CameraYaw)
-			&& UpdateIconImage(DisplayData.IconMaterial))
+		if (UpdateIconTransform(MainPlayerPosition, NewDisplayData, CameraYaw)
+			&& UpdateIconImage(NewDisplayData))
 		{
 			SetVisibility(ESlateVisibility::Visible);
 		}
+
+		DisplayData = NewDisplayData;
 	}
 	else
 	{
@@ -59,8 +61,9 @@ void UMinimapIcon::SetInterfacePtr(const TWeakObjectPtr<UObject> InterfacePtr)
 	SetIconEnabled(true);
 }
 
-bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const FVector& IconPosition, const float& CameraYaw)
+bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const FIconDisplayData& NewDisplayData, const float& CameraYaw)
 {
+	const FVector& IconPosition = NewDisplayData.IconPosition;
 	if (!CanvasSlot)
 	{
 		return false;
@@ -72,15 +75,24 @@ bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const 
 	return true;
 }
 
-bool UMinimapIcon::UpdateIconImage(UMaterialInstanceDynamic* IconMaterial)
+bool UMinimapIcon::UpdateIconImage(const FIconDisplayData& NewDisplayData)
 {
-	if (!IconMaterial || !IconImage)
+	UTexture2D* IconTexture = NewDisplayData.IconTexture;
+	if (!IconTexture || !IconImage)
+	{
+		return false;
+	}
+
+	IconMaterial = UMaterialInstanceDynamic::Create(IconMaterialBase, this);
+	if (!IconMaterial)
 	{
 		return false;
 	}
 
 	if (IconMaterial != CurrentIconMaterial)
 	{
+		IconMaterial->SetScalarParameterValue("HueShift", NewDisplayData.IconHueShift);
+		IconMaterial->SetTextureParameterValue("BotIcon", IconTexture);
 		IconImage->SetBrushFromMaterial(IconMaterial);
 		CurrentIconMaterial = IconMaterial;
 	}
