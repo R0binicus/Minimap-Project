@@ -80,6 +80,6 @@ protected:
 
 	// Update Icons
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icons",
-		meta = (ToolTip = "Updates all icons' location and image"))
+		meta = (ToolTip = "Updates all icon values and draws to render target"))
 	void UpdateIcons();
 };

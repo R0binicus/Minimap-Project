@@ -64,11 +64,11 @@ protected:
 
 	void UpdateMinimapParamValues();
 
-	void SetPlayerBasedValues();
+	void SetPlayerBasedValues() const;
 
-	void SetMinimapCentre(const TObjectPtr<ACharacter>& PlayerCharacter);
+	void SetMinimapCentre(const TObjectPtr<ACharacter>& PlayerCharacter) const;
 
-	void SetPlayerIndicatorRotation(const TObjectPtr<ACharacter>& PlayerCharacter);
+	void SetPlayerIndicatorRotation(const TObjectPtr<ACharacter>& PlayerCharacter) const;
 
 	void SetMinimapRotation();
 };

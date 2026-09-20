@@ -44,15 +44,15 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem",
 		meta = (ToolTip = "Registers player for use in the subsystem"))
-	void AddPlayer(const TScriptInterface<IMinimapIconable>& Player);
+	void AddPlayer(const TScriptInterface<IMinimapIconable>& PlayerInterface);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem",
 		meta = (ToolTip = "Registers player to be displayed as an icon in the minimap"))
-	void EnableMapDisplay(const TScriptInterface<IMinimapIconable>& Player);
+	void EnableMapDisplay(const TScriptInterface<IMinimapIconable>& PlayerInterface);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem",
 		meta = (ToolTip = "Unregisters player for use in the subsystem and minimap"))
-	void RemovePlayer(const TScriptInterface<IMinimapIconable>& Player);
+	void RemovePlayer(const TScriptInterface<IMinimapIconable>& PlayerInterface);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Subsystem",
 		meta = (ToolTip = "Modifies FVector with out reference parameter, returns false and ZeroVector if fails"))

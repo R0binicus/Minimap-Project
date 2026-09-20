@@ -24,12 +24,12 @@ public:
 	bool IsIconEnabled() const { return bIconEnabled; }
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon",
-		meta = (ToolTip = "Disabled and hides "))
+		meta = (ToolTip = "Shows or hides Icon"))
 	void SetIconEnabled(const bool bEnabled);
 
 	// Update functions
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon",
-		meta = (ToolTip = "Updates the icon's values"))
+		meta = (ToolTip = "Draws to render target, after updating values"))
 	void UpdateIcon(const FVector& MainPlayerPosition, const float CameraYaw);
 
 	void SetInterfacePtr(const TWeakObjectPtr<UObject> InterfacePtr);
@@ -52,8 +52,8 @@ protected:
 
 	// Update
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	bool UpdateIconTransform(const FVector& MainPlayerPosition, const FIconDisplayData& NewDisplayData, const float CameraYaw);
+	bool UpdateIconTransform(const FVector& MainPlayerPosition, const FIconDisplayData& NewDisplayData, const float CameraYaw) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Minimap Icon")
-	bool UpdateIconImage(const FIconDisplayData& NewDisplayData);
+	bool UpdateIconImage(const FIconDisplayData& NewDisplayData) const;
 };

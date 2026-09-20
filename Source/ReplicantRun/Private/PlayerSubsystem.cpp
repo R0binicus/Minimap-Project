@@ -42,7 +42,7 @@ bool UPlayerSubsystem::TryGetMainPlayerLocation(FVector& Location)
 			continue;
 		}
 
-		if (!(PlayerPtr->Implements<UMinimapIconable>()))
+		if (!PlayerPtr->Implements<UMinimapIconable>())
 		{
 			continue;
 		}
@@ -61,7 +61,7 @@ void UPlayerSubsystem::RemoveInterfaceFromArray(TArray<TWeakObjectPtr<UObject>>&
 {
 	const TObjectPtr<UObject> PlayerObj = PlayerInterface.GetObject();
 
-	if (!PlayerObj)
+	if (!IsValid(PlayerObj))
 	{
 		return;
 	}

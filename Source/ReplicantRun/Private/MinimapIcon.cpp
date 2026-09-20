@@ -57,7 +57,7 @@ void UMinimapIcon::SetInterfacePtr(const TWeakObjectPtr<UObject> InterfacePtr)
 	SetIconEnabled(true);
 }
 
-bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const FIconDisplayData& NewDisplayData, const float CameraYaw)
+bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const FIconDisplayData& NewDisplayData, const float CameraYaw) const
 {
 	if (!IsValid(IconMaterial))
 	{
@@ -73,7 +73,7 @@ bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const 
 	return true;
 }
 
-bool UMinimapIcon::UpdateIconImage(const FIconDisplayData& NewDisplayData)
+bool UMinimapIcon::UpdateIconImage(const FIconDisplayData& NewDisplayData) const
 {
 	if (!IsValid(IconMaterial))
 	{
