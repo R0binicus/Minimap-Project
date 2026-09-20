@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/CanvasPanel.h"
 #include "Components/Image.h"
 #include "HUDMinimap.generated.h"
 
@@ -64,9 +63,6 @@ protected:
 	TSubclassOf<UMinimapIcon> MinimapIconClass = nullptr;
 
 	// Bind Widget
-	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons", meta = (BindWidget))
-	TObjectPtr<UCanvasPanel> MainCanvasPanel;
-
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons", meta = (BindWidget))
 	TObjectPtr<UImage> MinimapImage;
 

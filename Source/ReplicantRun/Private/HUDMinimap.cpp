@@ -14,11 +14,6 @@ void UHUDMinimap::NativePreConstruct()
 		
 		CameraManager = UGameplayStatics::GetPlayerCameraManager(CurrentWorld, 0);
 	}
-
-	if (IsValid(MainCanvasPanel))
-	{
-		MainCanvasPanel->SetClipping(EWidgetClipping::ClipToBounds);
-	}
 }
 
 void UHUDMinimap::NativeConstruct()
