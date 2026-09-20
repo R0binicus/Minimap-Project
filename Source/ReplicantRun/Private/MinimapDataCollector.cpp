@@ -39,6 +39,9 @@ void AMinimapDataCollector::SetMinimapInitialValues()
 	MaterialParamInstance->SetScalarParameterValue(FName("MinimapDistanceWidth"), MinimapDistanceWidth);
 	MaterialParamInstance->SetScalarParameterValue(FName("MinimapScaleMultiplier"), ScaleMultiplier);
 	MaterialParamInstance->SetScalarParameterValue(FName("MinimapScaleOffset"), ScaleOffset);
+
+	MaterialParamInstance->SetScalarParameterValue(FName("IconRenderTargetScale"), IconRenderTargetScale);
+	MaterialParamInstance->SetScalarParameterValue(FName("IconScaleMultiplier"), IconScaleMultiplier);
 }
 
 void AMinimapDataCollector::UpdateMinimapParamValues()

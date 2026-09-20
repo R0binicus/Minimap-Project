@@ -52,6 +52,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
 	float XPosOffset = 1.f;
 
+	// Icon Values
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
+	float IconRenderTargetScale = 0.75f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
+	float IconScaleMultiplier = 0.11f;
+
 	// Set Minimap Material Parameter Functions
 	void SetMinimapInitialValues();
 
