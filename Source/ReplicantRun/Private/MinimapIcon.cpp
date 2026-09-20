@@ -82,7 +82,7 @@ bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const 
 
 	const FVector& NewIconPosition = NewDisplayData.IconPosition;
 	//CanvasSlot->SetPosition(FVector2D((MainPlayerPosition - NewIconPosition) * IconLocationMultiplier));
-	FVector IconLocation = FVector((MainPlayerPosition - NewIconPosition) * IconLocationMultiplier);
+	FVector IconLocation = FVector(MainPlayerPosition - NewIconPosition);
 	IconLocation = FVector(-IconLocation.Y, IconLocation.X, 0);
 	IconMaterial->SetVectorParameterValue("Location", IconLocation);
 	IconMaterial->SetScalarParameterValue("Rotation", CameraYaw);
