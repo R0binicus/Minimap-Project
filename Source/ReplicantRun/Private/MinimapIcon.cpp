@@ -3,40 +3,24 @@
 #include "IconDisplayData.h"
 #include "Kismet/KismetRenderingLibrary.h"
 
-void UMinimapIcon::InitIcon(UCanvasPanelSlot* NewCanvasSlot, UMaterialInterface* IconMaterialBase, UTextureRenderTarget2D* NewIconRenderTarget)
+void UMinimapIcon::InitIcon(UMaterialInterface* IconMaterialBase, UTextureRenderTarget2D* NewIconRenderTarget)
 {
-	if (!IsValid(NewCanvasSlot) || !IsValid(IconImage) || !IsValid(IconMaterialBase))
+	if (!IsValid(IconMaterialBase))
 	{
 		return;
 	}
 
-	SetCanvasSlot(NewCanvasSlot);
 	IconMaterial = UMaterialInstanceDynamic::Create(IconMaterialBase, this);
-	CanvasSlot->SetAlignment(FVector2D(AnchorValue, AnchorValue));
-	CanvasSlot->SetAnchors(FAnchors(AnchorValue));
-	IconImage->SetBrushFromMaterial(IconMaterial);
 	IconRenderTarget = NewIconRenderTarget;
-	SetVisibility(ESlateVisibility::Collapsed);
 
 	SetIconEnabled(false);
-}
-
-void UMinimapIcon::SetCanvasSlot(UCanvasPanelSlot* NewCanvasSlot)
-{
-	CanvasSlot = NewCanvasSlot;
 }
 
 void UMinimapIcon::SetIconEnabled(const bool bEnabled)
 {
 	bIconEnabled = bEnabled;
-	if (bIconEnabled)
+	if (!bIconEnabled)
 	{
-		//SetVisibility(ESlateVisibility::Visible);
-
-	}
-	else
-	{
-		SetVisibility(ESlateVisibility::Collapsed);
 		DisplayData = FIconDisplayData(); //Clear stored icon data
 	}
 }
@@ -52,10 +36,10 @@ void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const float Cam
 	{
 		const FIconDisplayData& NewDisplayData = IMinimapIconable::Execute_GetIconDisplayData(LockedObserver.Get());
 
-		if (UpdateIconTransform(MainPlayerPosition, NewDisplayData, CameraYaw)
-			&& UpdateIconImage(NewDisplayData))
+		if (!UpdateIconTransform(MainPlayerPosition, NewDisplayData, CameraYaw)
+			|| !UpdateIconImage(NewDisplayData))
 		{
-			//SetVisibility(ESlateVisibility::Visible);
+			return;
 		}
 
 		UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), IconRenderTarget, IconMaterial);
@@ -75,13 +59,12 @@ void UMinimapIcon::SetInterfacePtr(const TWeakObjectPtr<UObject> InterfacePtr)
 
 bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const FIconDisplayData& NewDisplayData, const float CameraYaw)
 {
-	if (!IsValid(IconMaterial) || !IsValid(CanvasSlot))
+	if (!IsValid(IconMaterial))
 	{
 		return false;
 	}
 
 	const FVector& NewIconPosition = NewDisplayData.IconPosition;
-	//CanvasSlot->SetPosition(FVector2D((MainPlayerPosition - NewIconPosition) * IconLocationMultiplier));
 	FVector IconLocation = FVector(MainPlayerPosition - NewIconPosition);
 	IconLocation = FVector(-IconLocation.Y, IconLocation.X, 0);
 	IconMaterial->SetVectorParameterValue("Location", IconLocation);

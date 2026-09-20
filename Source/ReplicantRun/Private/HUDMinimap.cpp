@@ -15,7 +15,7 @@ void UHUDMinimap::NativePreConstruct()
 		CameraManager = UGameplayStatics::GetPlayerCameraManager(CurrentWorld, 0);
 	}
 
-	if (MainCanvasPanel)
+	if (IsValid(MainCanvasPanel))
 	{
 		MainCanvasPanel->SetClipping(EWidgetClipping::ClipToBounds);
 	}
@@ -25,7 +25,7 @@ void UHUDMinimap::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (PlayerSubsystem)
+	if (IsValid(PlayerSubsystem))
 	{
 		MakeIcons(PlayerSubsystem->GetMaxBots());
 	}
@@ -42,7 +42,7 @@ void UHUDMinimap::NativeTick_Implementation(const FGeometry& MyGeometry, float I
 
 void UHUDMinimap::UpdateCameraYaw()
 {
-	if (CameraManager)
+	if (IsValid(CameraManager))
 	{
 		CameraYaw = CameraManager->GetCameraRotation().Yaw;
 	}
@@ -50,7 +50,7 @@ void UHUDMinimap::UpdateCameraYaw()
 
 void UHUDMinimap::UpdatePlayerLocation()
 {
-	if (PlayerSubsystem)
+	if (IsValid(PlayerSubsystem))
 	{
 		PlayerSubsystem->TryGetMainPlayerLocation(MainPlayerPosition);
 	}
@@ -72,25 +72,25 @@ void UHUDMinimap::MakeIcons(const int NewIconAmount)
 
 UMinimapIcon* UHUDMinimap::CreateIcon()
 {
-	if (!MinimapIconClass || !IconCanvasPanel)
+	if (!IsValid(MinimapIconClass))
 	{
 		return nullptr;
 	}
 
-	const TObjectPtr<UMinimapIcon> NewIconWidget = CreateWidget<UMinimapIcon>(GetWorld(), MinimapIconClass);
-	if (!NewIconWidget)
+	const TObjectPtr<UMinimapIcon> NewIconObject = NewObject<UMinimapIcon>(this, MinimapIconClass);
+	if (!IsValid(NewIconObject))
 	{
 		return nullptr;
 	}
 
-	NewIconWidget->InitIcon(IconCanvasPanel->AddChildToCanvas(NewIconWidget), IconMaterialBase, MinimapIconsRenderTarget);
+	NewIconObject->InitIcon(IconMaterialBase, MinimapIconsRenderTarget);
 
-	return NewIconWidget;
+	return NewIconObject;
 }
 
 void UHUDMinimap::UpdateIcons()
 {
-	if (!PlayerSubsystem || !IconCanvasPanel)
+	if (!IsValid(PlayerSubsystem))
 	{
 		return;
 	}
@@ -140,5 +140,4 @@ void UHUDMinimap::UpdateIcons()
 	}
 
 	PlayerSubsystem->SetDisplayArrayUnchanged();
-	//IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
 }

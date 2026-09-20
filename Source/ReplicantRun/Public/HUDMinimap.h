@@ -68,9 +68,6 @@ protected:
 	TObjectPtr<UCanvasPanel> MainCanvasPanel;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons", meta = (BindWidget))
-	TObjectPtr<UCanvasPanel> IconCanvasPanel;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Minimap Icons", meta = (BindWidget))
 	TObjectPtr<UImage> MinimapImage;
 
 	UPROPERTY()
