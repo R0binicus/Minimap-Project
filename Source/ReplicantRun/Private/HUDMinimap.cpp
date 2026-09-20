@@ -2,6 +2,7 @@
 #include "Kismet/GameplayStatics.h" 
 #include "MinimapIcon.h"
 #include "PlayerSubsystem.h"
+#include "Kismet/KismetRenderingLibrary.h"
 
 void UHUDMinimap::NativePreConstruct()
 {
@@ -103,6 +104,13 @@ void UHUDMinimap::UpdateIcons()
 		MakeIcons(NewIconsNeeded);
 	}
 
+	if (!IsValid(MinimapIconsRenderTarget))
+	{
+		return;
+	}
+
+	UKismetRenderingLibrary::ClearRenderTarget2D(GetWorld(), MinimapIconsRenderTarget, FLinearColor::Black);
+
 	for (size_t i = 0; i < IconPool.Num(); i++)
 	{
 		TObjectPtr<UMinimapIcon> MinimapIcon = IconPool[i];
@@ -132,5 +140,5 @@ void UHUDMinimap::UpdateIcons()
 	}
 
 	PlayerSubsystem->SetDisplayArrayUnchanged();
-	IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
+	//IconCanvasPanel->SetRenderTransformAngle(RightAngleDegrees - CameraYaw);
 }

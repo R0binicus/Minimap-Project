@@ -1,6 +1,7 @@
 #include "MinimapIcon.h"
 #include "MinimapIconable.h"
 #include "IconDisplayData.h"
+#include "Kismet/KismetRenderingLibrary.h"
 
 void UMinimapIcon::InitIcon(UCanvasPanelSlot* NewCanvasSlot, UMaterialInterface* IconMaterialBase, UTextureRenderTarget2D* NewIconRenderTarget)
 {
@@ -15,6 +16,7 @@ void UMinimapIcon::InitIcon(UCanvasPanelSlot* NewCanvasSlot, UMaterialInterface*
 	CanvasSlot->SetAnchors(FAnchors(AnchorValue));
 	IconImage->SetBrushFromMaterial(IconMaterial);
 	IconRenderTarget = NewIconRenderTarget;
+	SetVisibility(ESlateVisibility::Collapsed);
 
 	SetIconEnabled(false);
 }
@@ -29,7 +31,7 @@ void UMinimapIcon::SetIconEnabled(const bool bEnabled)
 	bIconEnabled = bEnabled;
 	if (bIconEnabled)
 	{
-		SetVisibility(ESlateVisibility::Visible);
+		//SetVisibility(ESlateVisibility::Visible);
 
 	}
 	else
@@ -41,6 +43,11 @@ void UMinimapIcon::SetIconEnabled(const bool bEnabled)
 
 void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const float CameraYaw)
 {
+	if (!IsValid(IconRenderTarget) || !IsValid(IconMaterial))
+	{
+		return;
+	}
+
 	if (const TStrongObjectPtr<UObject> LockedObserver = IconInterfacePtr.Pin())
 	{
 		const FIconDisplayData& NewDisplayData = IMinimapIconable::Execute_GetIconDisplayData(LockedObserver.Get());
@@ -48,9 +55,10 @@ void UMinimapIcon::UpdateIcon(const FVector& MainPlayerPosition, const float Cam
 		if (UpdateIconTransform(MainPlayerPosition, NewDisplayData, CameraYaw)
 			&& UpdateIconImage(NewDisplayData))
 		{
-			SetVisibility(ESlateVisibility::Visible);
+			//SetVisibility(ESlateVisibility::Visible);
 		}
 
+		UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), IconRenderTarget, IconMaterial);
 		DisplayData = NewDisplayData;
 	}
 	else
@@ -73,8 +81,11 @@ bool UMinimapIcon::UpdateIconTransform(const FVector& MainPlayerPosition, const 
 	}
 
 	const FVector& NewIconPosition = NewDisplayData.IconPosition;
-	CanvasSlot->SetPosition(FVector2D((MainPlayerPosition - NewIconPosition) * IconLocationMultiplier));
-	IconMaterial->SetScalarParameterValue("Rotation", CameraYaw - RightAngleDegrees);
+	//CanvasSlot->SetPosition(FVector2D((MainPlayerPosition - NewIconPosition) * IconLocationMultiplier));
+	FVector IconLocation = FVector((MainPlayerPosition - NewIconPosition) * IconLocationMultiplier);
+	IconLocation = FVector(-IconLocation.Y, IconLocation.X, 0);
+	IconMaterial->SetVectorParameterValue("Location", IconLocation);
+	IconMaterial->SetScalarParameterValue("Rotation", CameraYaw);
 
 	return true;
 }
